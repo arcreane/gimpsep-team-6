@@ -3,7 +3,7 @@
 
 class Operation {
 public:
-	static Image DilatationOrErosion(Image inputImage, int erosionSize);
+	static Image DilatationOrErosion(Image inputImage, int size, bool isErosion);
 	static Image Resizing(Image inputImage, int factor);
 	static Image BrightnessChange(Image inputImage, int factor);
 	static Image Stitching(Image* images);
