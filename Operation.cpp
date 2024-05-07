@@ -44,10 +44,6 @@ Image Operation::CannyEdgeDetection(Image inputImage, double lowThreshold, doubl
 	Mat edges;
 	Canny(gray, edges, lowThreshold, highThreshold, kernel);
 
-	Image edgeImage = Image(edges);
-
-	edgeImage.display();
-
-	return edgeImage;
+	return Image(edges);
 }
 

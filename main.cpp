@@ -16,39 +16,37 @@ void performCannyEdgeDetection(Image& inputImage) {
     cout << "Enter the kernel size: ";
     cin >> kernel;
 
-    Operation::CannyEdgeDetection(inputImage, lowThreshold, highThreshold, kernel);
+    Image outputImage = Operation::CannyEdgeDetection(inputImage, lowThreshold, highThreshold, kernel);
+    outputImage.display();
+}
+
+void performErosionDilation(Image& inputImage) {
+    char choix;
+    cout << "Voulez-vous faire une �rosion (e) ou une dilatation (d) ? ";
+    cin >> choix;
+
+    bool isErosion;
+    if (choix == 'e' || choix == 'E') {
+        isErosion = true;
+    }
+    else {
+        isErosion = false;
+    }
+
+    int size;
+    cout << "Entrez la taille de l'�rosion/dilatation (entre 0 et 30) : ";
+    cin >> size;
+
+    Image outputImage = Operation::DilatationOrErosion(inputImage, size, isErosion);
+    outputImage.display();
 }
 
 int main() {
-	//Exemple pour dilatation et erosion: 
-	string cheminImage = "chemin/vers/image";
-	Image inputImage(cheminImage);
-	inputImage.display();
-
-	char choix;
-	cout << "Voulez-vous faire une �rosion (e) ou une dilatation (d) ? ";
-	cin >> choix;
-
-	bool isErosion;
-	if (choix == 'e' || choix == 'E') {
-		isErosion = true;
-	}
-	else {
-		isErosion = false;
-	}
-
-	int size;
-	cout << "Entrez la taille de l'�rosion/dilatation (entre 0 et 30) : ";
-	cin >> size;
-
-	Image outputImage = Operation::DilatationOrErosion(inputImage, size, isErosion);
-	outputImage.display();
-
-
     string imagePath;
     cout << "Enter the path to the input image: ";
     cin >> imagePath;
     Image inputImage(imagePath);
+    inputImage.display();
 
     int choice;
     cout << "Enter choice of what you want to do:\n"
@@ -62,6 +60,7 @@ int main() {
     switch (choice) {
     case 1:
         cout << "Performing DilationOrErosion...\n";
+        performErosionDilation(inputImage);
         break;
     case 2:
         cout << "Performing Resizing...\n";
