@@ -5,6 +5,20 @@
 using namespace std;
 using namespace cv;
 
+void performCannyEdgeDetection(Image& inputImage) {
+    double lowThreshold, highThreshold;
+    cout << "Enter the low threshold: ";
+    cin >> lowThreshold;
+    cout << "Enter the high threshold: ";
+    cin >> highThreshold;
+
+    double kernel;
+    cout << "Enter the kernel size: ";
+    cin >> kernel;
+
+    Operation::CannyEdgeDetection(inputImage, lowThreshold, highThreshold, kernel);
+}
+
 int main() {
 	//Exemple pour dilatation et erosion: 
 	string cheminImage = "chemin/vers/image";
@@ -12,7 +26,7 @@ int main() {
 	inputImage.display();
 
 	char choix;
-	cout << "Voulez-vous faire une érosion (e) ou une dilatation (d) ? ";
+	cout << "Voulez-vous faire une ï¿½rosion (e) ou une dilatation (d) ? ";
 	cin >> choix;
 
 	bool isErosion;
@@ -24,12 +38,48 @@ int main() {
 	}
 
 	int size;
-	cout << "Entrez la taille de l'érosion/dilatation (entre 0 et 30) : ";
+	cout << "Entrez la taille de l'ï¿½rosion/dilatation (entre 0 et 30) : ";
 	cin >> size;
 
 	Image outputImage = Operation::DilatationOrErosion(inputImage, size, isErosion);
 	outputImage.display();
 
 
-	return 0;
+    string imagePath;
+    cout << "Enter the path to the input image: ";
+    cin >> imagePath;
+    Image inputImage(imagePath);
+
+    int choice;
+    cout << "Enter choice of what you want to do:\n"
+        << "[1] DilationOrErosion\n"
+        << "[2] Resizing\n"
+        << "[3] Brightness Change\n"
+        << "[4] Stitching\n"
+        << "[5] Edge Detection\n";
+    cin >> choice;
+
+    switch (choice) {
+    case 1:
+        cout << "Performing DilationOrErosion...\n";
+        break;
+    case 2:
+        cout << "Performing Resizing...\n";
+        break;
+    case 3:
+        cout << "Performing Brightness Change...\n";
+        break;
+    case 4:
+        cout << "Performing Stitching...\n";
+        break;
+    case 5:
+        cout << "Performing Edge Detection...\n";
+        performCannyEdgeDetection(inputImage);
+        break;
+    default:
+        cout << "Invalid choice!\n";
+        break;
+    }
+
+    return 0;
 }
