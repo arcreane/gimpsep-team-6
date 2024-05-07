@@ -31,6 +31,7 @@ Image Operation::Resizing(Image inputImage, float factor, int width, int height)
 
 	Mat resizedImage;
 	if (factor > 0) {
+		factor = (factor > 10) ? 10 : factor;
 		resize(inputImage.getImage(), resizedImage, Size(), factor, factor);
 	}
 	else {
@@ -89,6 +90,4 @@ Image Operation::CannyEdgeDetection(Image inputImage, double lowThreshold, doubl
 }
 
 //Image Operation::Stitching(Image* images) {}
-
-//Image Operation::CannyEdgeDetection(Image inputImage, double lowThreshold, double highThreshold, double kernel) {}
 

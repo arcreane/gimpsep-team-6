@@ -22,7 +22,7 @@ void performCannyEdgeDetection(Image& inputImage) {
 
 void performErosionDilation(Image& inputImage) {
     char choix;
-    cout << "Voulez-vous faire une �rosion (e) ou une dilatation (d) ? ";
+    cout << "Voulez-vous faire une érosion (e) ou une dilatation (d) ? ";
     cin >> choix;
 
     bool isErosion;
@@ -34,17 +34,70 @@ void performErosionDilation(Image& inputImage) {
     }
 
     int size;
-    cout << "Entrez la taille de l'�rosion/dilatation (entre 0 et 30) : ";
+    cout << "Entrez la taille de l'érosion/dilatation (entre 0 et 30) : ";
     cin >> size;
 
     Image outputImage = Operation::DilatationOrErosion(inputImage, size, isErosion);
     outputImage.display();
 }
 
+void performResizing(Image& inputImage) {
+    char choix;
+    cout << "Voulez-vous spécifier les nouvelles dimensions (d) ou un facteur de redimensionnement (f) ? ";
+    cin >> choix;
+
+    if (choix == 'd' || choix == 'D') {
+        int width, height;
+        cout << "Entrez les nouvelles dimensions (largeur hauteur) : ";
+        cin >> width >> height;
+
+        Image outputImage = Operation::Resizing(inputImage, 0, width, height);
+        outputImage.display();
+    }
+    else if (choix == 'f' || choix == 'F') {
+        float factor;
+        cout << "Entrez le facteur de redimensionnement (> 0) : ";
+        cin >> factor;
+
+        Image outputImage = Operation::Resizing(inputImage, factor, 0, 0);
+        outputImage.display();
+    }
+    else {
+        cout << "Choix invalide." << endl;
+    }
+
+}
+
+void performBrightnessChange(Image& inputImage) {
+    char choix;
+    cout << "Voulez-vous effectuer un changement de luminosité (b) ou de saturation (s) ? ";
+    cin >> choix;
+    float factor;
+
+    if (choix == 'b' || choix == 'B') {
+        cout << "Entrez le facteur de luminosité (entre -255 et 255): ";
+        cin >> factor;
+
+        Image outputImage = Operation::BrightnessChange(inputImage, factor, true);
+        outputImage.display();
+    }
+    else if (choix == 's' || choix == 'S') {
+        cout << "Entrez le facteur de saturation (entre 0 et 3) : ";
+        cin >> factor;
+
+        Image outputImage = Operation::BrightnessChange(inputImage, factor, false);
+        outputImage.display();
+    }
+    else {
+        cout << "Choix invalide." << endl;
+    }
+
+}
+
 int main() {
-    string imagePath;
-    cout << "Enter the path to the input image: ";
-    cin >> imagePath;
+    string imagePath = "C:/Users/marie/OneDrive - ISEP/Isep/A2/S2/Appli multimedia/TP/TP2/TP2/img/HappyFish.jpg";
+    //cout << "Enter the path to the input image: ";
+    //getline(cin, imagePath);
     Image inputImage(imagePath);
     inputImage.display();
 
@@ -64,9 +117,11 @@ int main() {
         break;
     case 2:
         cout << "Performing Resizing...\n";
+        performResizing(inputImage);
         break;
     case 3:
         cout << "Performing Brightness Change...\n";
+        performBrightnessChange(inputImage);
         break;
     case 4:
         cout << "Performing Stitching...\n";
