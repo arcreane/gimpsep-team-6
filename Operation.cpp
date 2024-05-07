@@ -1,4 +1,7 @@
 #include "operation.h"
+#include <opencv2/opencv.hpp>
+
+using namespace cv;
 
 
 Image Operation::DilatationOrErosion(Image inputImage, int size, bool isErosion) {
@@ -21,11 +24,30 @@ Image Operation::DilatationOrErosion(Image inputImage, int size, bool isErosion)
 	return Image(outputMat);
 }
 
-Image Operation::Resizing(Image inputImage, int factor) {}
+//Image Operation::Resizing(Image inputImage, int factor) {}
+//
+//Image Operation::BrightnessChange(Image inputImage, int factor) {}
+//
+//Image Operation::Stitching(Image* images) {}
 
-Image Operation::BrightnessChange(Image inputImage, int factor) {}
+Image Operation::CannyEdgeDetection(Image inputImage, double lowThreshold, double highThreshold, double kernel) {
+	Mat inputMat = inputImage.getImage();
 
-Image Operation::Stitching(Image* images) {}
+	Mat gray;
+	if (inputMat.channels() > 1) {
+		cvtColor(inputMat, gray, COLOR_BGR2GRAY);
+	}
+	else {
+		gray = inputMat;
+	}
 
-Image Operation::CannyEdgeDetection(Image inputImage, double lowThreshold, double highThreshold, double kernel) {}
+	Mat edges;
+	Canny(gray, edges, lowThreshold, highThreshold, kernel);
+
+	Image edgeImage = Image(edges);
+
+	edgeImage.display();
+
+	return edgeImage;
+}
 
