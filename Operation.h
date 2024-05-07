@@ -1,4 +1,5 @@
 #pragma once
+#include "image.h"
 
 class Operation {
 public:
