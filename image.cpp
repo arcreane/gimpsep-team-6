@@ -9,6 +9,11 @@ Image::Image(const string& path) {
 	dimensions = image.size();
 }
 
+Image::Image(const Mat& img) {
+	image = img.clone();
+	dimensions = image.size();
+}
+
 void Image::display() {
 	namedWindow("Image", WINDOW_AUTOSIZE);
 	imshow("Image", image);
@@ -23,3 +28,9 @@ Size Image::getDimensions() const
 {
 	return dimensions;
 }
+
+Mat Image::getImage() const
+{
+	return image;
+}
+

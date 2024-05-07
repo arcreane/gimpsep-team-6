@@ -1,8 +1,13 @@
 #include <iostream>
+#include "image.h"
+#include "Operation.h"
+
+using namespace std;
+using namespace cv;
 
 int main() {
 	//Exemple pour dilatation et erosion: 
-	string cheminImage = "C:/Users/marie/OneDrive - ISEP/Isep/A2/S2/Appli multimedia/TP/TP2/TP2/img/HappyFish.jpg";
+	string cheminImage = "chemin/vers/image";
 	Image inputImage(cheminImage);
 	inputImage.display();
 
