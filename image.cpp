@@ -1,20 +1,21 @@
 #include "image.h"
 #include <opencv2/opencv.hpp>
-using namespace std;
-using namespace cv;
 
-Image(const string& path) {
+using namespace cv;
+using namespace std;
+
+Image::Image(const string& path) {
 	image = imread(path);
 	dimensions = image.size();
 }
 
-void display() {
+void Image::display() {
 	namedWindow("Image", WINDOW_AUTOSIZE);
 	imshow("Image", image);
 	waitKey(0);
 }
 
-void save(const string& path) {
+void Image::save(const string& path) {
 	imwrite(path, image);
 }
 
