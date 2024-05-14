@@ -95,9 +95,9 @@ void performBrightnessChange(Image& inputImage) {
 }
 
 int main() {
-    string imagePath = "C:/Users/marie/OneDrive - ISEP/Isep/A2/S2/Appli multimedia/TP/TP2/TP2/img/HappyFish.jpg";
-    //cout << "Enter the path to the input image: ";
-    //getline(cin, imagePath);
+    string imagePath;
+    cout << "Enter the path to the input image: ";
+    cin >> imagePath;
     Image inputImage(imagePath);
     inputImage.display();
 
