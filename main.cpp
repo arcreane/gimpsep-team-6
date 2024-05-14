@@ -1,6 +1,7 @@
 #include <iostream>
 #include "image.h"
 #include "Operation.h"
+#include "video.h"
 
 using namespace std;
 using namespace cv;
@@ -21,12 +22,12 @@ void performCannyEdgeDetection(Image& inputImage) {
 }
 
 void performErosionDilation(Image& inputImage) {
-    char choix;
-    cout << "Voulez-vous faire une érosion (e) ou une dilatation (d) ? ";
-    cin >> choix;
+    char choice;
+    cout << "Do you want to perform erosion (e) or dilation (d)? ";
+    cin >> choice;
 
     bool isErosion;
-    if (choix == 'e' || choix == 'E') {
+    if (choice == 'e' || choice == 'E') {
         isErosion = true;
     }
     else {
@@ -34,84 +35,143 @@ void performErosionDilation(Image& inputImage) {
     }
 
     int size;
-    cout << "Entrez la taille de l'érosion/dilatation (entre 0 et 30) : ";
+    cout << "Enter the size for erosion/dilation (between 0 and 30): ";
     cin >> size;
 
     Image outputImage = Operation::DilatationOrErosion(inputImage, size, isErosion);
     outputImage.display();
+
 }
 
 void performResizing(Image& inputImage) {
-    char choix;
-    cout << "Voulez-vous spécifier les nouvelles dimensions (d) ou un facteur de redimensionnement (f) ? ";
-    cin >> choix;
+    char choice;
+    cout << "Do you want to specify new dimensions (d) or a resizing factor (f)? ";
+    cin >> choice;
 
-    if (choix == 'd' || choix == 'D') {
+    if (choice == 'd' || choice == 'D') {
         int width, height;
-        cout << "Entrez les nouvelles dimensions (largeur hauteur) : ";
+        cout << "Enter the new dimensions (width height): ";
         cin >> width >> height;
 
         Image outputImage = Operation::Resizing(inputImage, 0, width, height);
         outputImage.display();
     }
-    else if (choix == 'f' || choix == 'F') {
+    else if (choice == 'f' || choice == 'F') {
         float factor;
-        cout << "Entrez le facteur de redimensionnement (> 0) : ";
+        cout << "Enter the resizing factor (> 0): ";
         cin >> factor;
 
         Image outputImage = Operation::Resizing(inputImage, factor, 0, 0);
         outputImage.display();
     }
     else {
-        cout << "Choix invalide." << endl;
+        cout << "Invalid choice." << endl;
     }
+
 
 }
 
 void performBrightnessChange(Image& inputImage) {
-    char choix;
-    cout << "Voulez-vous effectuer un changement de luminosité (b) ou de saturation (s) ? ";
-    cin >> choix;
+    char choice;
+    cout << "Do you want to perform a brightness change (b) or saturation change (s)? ";
+    cin >> choice;
     float factor;
 
-    if (choix == 'b' || choix == 'B') {
-        cout << "Entrez le facteur de luminosité (entre -255 et 255): ";
+    if (choice == 'b' || choice == 'B') {
+        cout << "Enter the brightness factor (between -255 and 255): ";
         cin >> factor;
 
         Image outputImage = Operation::BrightnessChange(inputImage, factor, true);
         outputImage.display();
     }
-    else if (choix == 's' || choix == 'S') {
-        cout << "Entrez le facteur de saturation (entre 0 et 3) : ";
+    else if (choice == 's' || choice == 'S') {
+        cout << "Enter the saturation factor (between 0 and 3): ";
         cin >> factor;
 
         Image outputImage = Operation::BrightnessChange(inputImage, factor, false);
         outputImage.display();
     }
     else {
-        cout << "Choix invalide." << endl;
+        cout << "Invalid choice." << endl;
     }
+
 
 }
 
-void performStitching(Image& imageRight, Image& imageLeft) {
-    Image outputImage = Operation::Stitching(imageRight, imageLeft);
+void performCrop(Image& inputImage) {
+    int xmin, xmax, ymin, ymax;
+
+    cout << "Enter the value for ymin (min: 0): ";
+    cin >> ymin;
+    cout << "Enter the value for ymax (max: " << inputImage.getDimensions().height << "): ";
+    cin >> ymax;
+    cout << "Enter the value for xmin (min: 0): ";
+    cin >> xmin;
+    cout << "Enter the value for xmax (max: " << inputImage.getDimensions().width << "): ";
+    cin >> xmax;
+
+    if (xmin < 0 || xmax > inputImage.getDimensions().width || ymin < 0 || ymax > inputImage.getDimensions().height || xmin >= xmax || ymin >= ymax) {
+        cout << "Invalid crop dimensions." << endl;
+        return;
+    }
+
+    Image outputImage = Operation::Crop(inputImage, ymin, ymax, xmin, xmax);
+    outputImage.display();
+
+}
+
+void performRotation(Image& inputImage) {
+    double rotationAngle;
+    cout << "Enter the rotation angle: ";
+    cin >> rotationAngle;
+
+    Image rotatedImage = Operation::Rotation(inputImage, rotationAngle);
+
+    rotatedImage.display();
+}
+
+void performChangeColor(Image& inputImage) {
+    int colorVariation;
+    cout << "Enter the color variation value (between -180 and 180): ";
+    cin >> colorVariation;
+
+    Image changedImage = Operation::ChangeColor(inputImage, colorVariation);
+
+    changedImage.display();
+}
+
+void performConvertToGray(Image& inputImage) {
+    Image grayImage = Operation::ConvertToGray(inputImage);
+    grayImage.display();
+}
+
+void performStitching() {
+    int nbImages;
+    cout << "Enter the number of images you want to stitch: ";
+    cin >> nbImages;
+
+    vector<Mat> inputImages;
+    for (int i = 0; i < nbImages; i++) {
+        string imagePath;
+        cout << "Enter the path to the input image: ";
+        cin >> imagePath;
+        Image inputImage(imagePath);
+        inputImage.display();
+
+        Mat inputMatrice = inputImage.getImage();
+        inputImages.push_back(inputMatrice);
+    }
+
+    Image outputImage = Operation::Stitching(inputImages);
     outputImage.display();
 }
 
 int main() {
-    string imagePath = "C:/Users/Lisa/source/repos/ConsoleApplication3/ConsoleApplication3/res/HappyFish.jpg";
-    //cout << "Enter the path to the input image: ";
-    //getline(cin, imagePath);
+    string imagePath;
+    cout << "Enter the path to the input image: ";
+    cin >> imagePath;
     Image inputImage(imagePath);
     inputImage.display();
-
-    // images for stitching
-    string imagePathRight = "C:/Users/Lisa/source/repos/ConsoleApplication3/ConsoleApplication3/res/DSC02361_right.JPG";
-    Image inputImageRight(imagePathRight);
-    string imagePathLeft = "C:/Users/Lisa/source/repos/ConsoleApplication3/ConsoleApplication3/res/DSC02361_left.JPG";
-    Image inputImageLeft(imagePathLeft);
-
 
     int choice;
     cout << "Enter choice of what you want to do:\n"
@@ -119,7 +179,11 @@ int main() {
         << "[2] Resizing\n"
         << "[3] Brightness Change\n"
         << "[4] Stitching\n"
-        << "[5] Edge Detection\n";
+        << "[5] Edge Detection\n"
+        << "[6] Crop\n"
+        << "[7] Rotation\n"
+        << "[8] Change color\n"
+        << "[9] Convert to gray\n";
     cin >> choice;
 
     switch (choice) {
@@ -137,11 +201,27 @@ int main() {
         break;
     case 4:
         cout << "Performing Stitching...\n";
-        performStitching(inputImageRight, inputImageLeft);
+        performStitching();
         break;
     case 5:
         cout << "Performing Edge Detection...\n";
         performCannyEdgeDetection(inputImage);
+        break;
+    case 6:
+        cout << "Performing Crop...\n";
+        performCrop(inputImage);
+        break;
+    case 7:
+        cout << "Performing Rotation...\n";
+        performRotation(inputImage);
+        break;
+    case 8:
+        cout << "Performing Change color...\n";
+        performChangeColor(inputImage);
+        break;
+    case 9:
+        cout << "Performing Convert to gray...\n";
+        performConvertToGray(inputImage);
         break;
     default:
         cout << "Invalid choice!\n";

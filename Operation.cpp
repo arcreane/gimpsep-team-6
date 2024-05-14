@@ -89,14 +89,62 @@ Image Operation::CannyEdgeDetection(Image inputImage, double lowThreshold, doubl
 	return Image(edges);
 }
 
-Image Operation::Stitching(Image imageRight, Image imageLeft) {
-	Mat inputImageRight = imageRight.getImage();
-	Mat inputImageLeft = imageLeft.getImage();
+Image Operation::Crop(Image inputImage, int ymin, int ymax, int xmin, int xmax) {
+	Size imgSize = inputImage.getDimensions();
 
-	vector<Mat> inputImages;
-	inputImages.push_back(inputImageRight);
-	inputImages.push_back(inputImageLeft);
+	ymin = max(0, ymin);
+	ymax = min(imgSize.height, ymax);
+	xmin = max(0, xmin);
+	xmax = min(imgSize.width, xmax);
 
+	if (ymin >= ymax || xmin >= xmax) {
+		cerr << "Invalid crop dimensions" << endl;
+		return Image(inputImage.getImage());
+	}
+
+	Mat croppedImage = inputImage.getImage()(Range(ymin, ymax), Range(xmin, xmax));
+	return Image(croppedImage);
+}
+
+Image Operation::Rotation(Image inputImage, double rotationAngle) {
+	Mat source = inputImage.getImage();
+	Mat M, result;
+
+	Point2f center(source.cols / 2.0, source.rows / 2.0);
+	double scale = 1.0;
+
+	M = getRotationMatrix2D(center, rotationAngle, scale);
+
+	warpAffine(source, result, M, source.size());
+
+	return Image(result);
+}
+
+Image Operation::ChangeColor(Image inputImage, int colorVariation) {
+	Mat source = inputImage.getImage();
+	Mat result;
+
+	cvtColor(source, result, COLOR_BGR2HSV);
+	vector<Mat> channels;
+	split(result, channels);
+	channels[0] += colorVariation;
+	merge(channels, result);
+	cvtColor(result, result, COLOR_HSV2BGR);
+	return Image(result);
+}
+
+Image Operation::ConvertToGray(Image inputImage) {
+	Mat source = inputImage.getImage();
+	Mat result;
+
+	cvtColor(source, result, COLOR_BGR2GRAY);
+
+	return Image(result);
+}
+
+
+//Image Operation::Stitching(Image* images) {}
+Image Operation::Stitching(vector<Mat> inputImages) {
 	Stitcher::Mode mode = Stitcher::PANORAMA;
 	Ptr<Stitcher> stitcher = Stitcher::create(mode);
 
@@ -106,7 +154,6 @@ Image Operation::Stitching(Image imageRight, Image imageLeft) {
 	// look for errors
 	if (status != Stitcher::OK) {
 		cout << "Stiching failed.\n";
-		return inputImageRight;
 	}
 
 	return Image(outputMat);
