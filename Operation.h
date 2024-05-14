@@ -8,4 +8,8 @@ public:
 	static Image BrightnessChange(Image inputImage, float factor, bool isBrightness);
 	//static Image Stitching(Image* images);
 	static Image CannyEdgeDetection(Image inputImage, double lowThreshold, double highThreshold, double kernel);
+	static Image Crop(Image inputImage, int ymin, int ymax, int xmin, int xmax);
+	static Image Rotation(Image inputImage, double rotationAngle);
+	static Image ChangeColor(Image inputImage, int colorVariation);
+	static Image ConvertToGray(Image inputImage);
 };
