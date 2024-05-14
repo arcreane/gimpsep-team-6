@@ -1,6 +1,7 @@
 #include <iostream>
 #include "image.h"
 #include "Operation.h"
+#include "video.h"
 
 using namespace std;
 using namespace cv;
