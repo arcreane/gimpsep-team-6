@@ -6,12 +6,12 @@ using namespace cv;
 
 Image Operation::DilatationOrErosion(Image inputImage, int size, bool isErosion) {
 	if (size < 0) {
-		size = 0; 
+		size = 0;
 	}
 	else if (size > 30) {
-		size = 30; 
+		size = 30;
 	}
-	
+
 	int type = MORPH_ELLIPSE; // Voir si on ajoute un paramètre pour choisir le type
 	Mat outputMat;
 	Mat element = getStructuringElement(type, Size(2 * size + 1, 2 * size + 1), Point(size, size));
@@ -89,5 +89,25 @@ Image Operation::CannyEdgeDetection(Image inputImage, double lowThreshold, doubl
 	return Image(edges);
 }
 
-//Image Operation::Stitching(Image* images) {}
+Image Operation::Stitching(Image imageRight, Image imageLeft) {
+	Mat inputImageRight = imageRight.getImage();
+	Mat inputImageLeft = imageLeft.getImage();
 
+	vector<Mat> inputImages;
+	inputImages.push_back(inputImageRight);
+	inputImages.push_back(inputImageLeft);
+
+	Stitcher::Mode mode = Stitcher::PANORAMA;
+	Ptr<Stitcher> stitcher = Stitcher::create(mode);
+
+	Mat outputMat;
+	Stitcher::Status status = stitcher->stitch(inputImages, outputMat);
+
+	// look for errors
+	if (status != Stitcher::OK) {
+		cout << "Stiching failed.\n";
+		return inputImageRight;
+	}
+
+	return Image(outputMat);
+}

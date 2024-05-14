@@ -94,12 +94,24 @@ void performBrightnessChange(Image& inputImage) {
 
 }
 
+void performStitching(Image& imageRight, Image& imageLeft) {
+    Image outputImage = Operation::Stitching(imageRight, imageLeft);
+    outputImage.display();
+}
+
 int main() {
-    string imagePath = "C:/Users/marie/OneDrive - ISEP/Isep/A2/S2/Appli multimedia/TP/TP2/TP2/img/HappyFish.jpg";
+    string imagePath = "C:/Users/Lisa/source/repos/ConsoleApplication3/ConsoleApplication3/res/HappyFish.jpg";
     //cout << "Enter the path to the input image: ";
     //getline(cin, imagePath);
     Image inputImage(imagePath);
     inputImage.display();
+
+    // images for stitching
+    string imagePathRight = "C:/Users/Lisa/source/repos/ConsoleApplication3/ConsoleApplication3/res/DSC02361_right.JPG";
+    Image inputImageRight(imagePathRight);
+    string imagePathLeft = "C:/Users/Lisa/source/repos/ConsoleApplication3/ConsoleApplication3/res/DSC02361_left.JPG";
+    Image inputImageLeft(imagePathLeft);
+
 
     int choice;
     cout << "Enter choice of what you want to do:\n"
@@ -125,6 +137,7 @@ int main() {
         break;
     case 4:
         cout << "Performing Stitching...\n";
+        performStitching(inputImageRight, inputImageLeft);
         break;
     case 5:
         cout << "Performing Edge Detection...\n";
