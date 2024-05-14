@@ -142,8 +142,6 @@ Image Operation::ConvertToGray(Image inputImage) {
 	return Image(result);
 }
 
-
-//Image Operation::Stitching(Image* images) {}
 Image Operation::Stitching(vector<Mat> inputImages) {
 	Stitcher::Mode mode = Stitcher::PANORAMA;
 	Ptr<Stitcher> stitcher = Stitcher::create(mode);
