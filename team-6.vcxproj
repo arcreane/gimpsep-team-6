@@ -109,7 +109,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\opencv\build\x64\vc16\lib;C:\opencv\build\x64\vc16\staticlib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\opencv\build\x64\vc16\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);opencv_world490d.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -136,12 +136,16 @@
     <ClCompile Include="image.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Operation.cpp" />
+    <ClCompile Include="operationVideo.cpp" />
+    <ClCompile Include="process.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="video.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="image.h" />
     <ClInclude Include="Operation.h" />
+    <ClInclude Include="operationVideo.h" />
+    <ClInclude Include="process.h" />
     <ClInclude Include="video.h" />
   </ItemGroup>
   <ItemGroup>
