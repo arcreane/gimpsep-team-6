@@ -27,7 +27,8 @@ int main() {
     try {
         if (isImage) {
             string imagePath;
-            imagePath = "C:/Users/marie/OneDrive - ISEP/Isep/A2/S2/Appli multimedia/TP/TP2/TP2/img/HappyFish.jpg";
+            //imagePath = "C:/Users/marie/OneDrive - ISEP/Isep/A2/S2/Appli multimedia/TP/TP2/TP2/img/HappyFish.jpg";
+            imagePath = "C:/Users/marie/Pictures/image_c1.jpg";
             //cout << "Enter the path to the input image: ";
             //cin >> imagePath;
             inputImage = new Image(imagePath); 
@@ -48,7 +49,7 @@ int main() {
             << "[1] DilationOrErosion\n"
             << "[2] Resizing\n"
             << "[3] Brightness Change\n"
-            << "[4] Stitching\n"
+            << "[4] Stitching (not for videos)\n"
             << "[5] Edge Detection\n"
             << "[6] Crop\n"
             << "[7] Rotation\n"

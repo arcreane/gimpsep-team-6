@@ -7,6 +7,7 @@ void performErosionDilation(Image* inputImage);
 void performErosionDilationVideo(Video* inputVideo);
 void performResizing(Image* inputImage);
 //void performResizingVideo(Video* inputVideo);
+void performStitching(Image* inputImage);
 void performBrightnessChange(Image* inputImage);
 //void performBrightnessChangeVideo(Video* inputVideo);
 void performCannyEdgeDetection(Image* inputImage);
