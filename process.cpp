@@ -254,3 +254,4 @@ void performConvertToGray(Image* inputImage) {
     grayImage.display();
 }
 
+//Add stitching
