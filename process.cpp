@@ -40,7 +40,12 @@ void processChoice(int choice, bool isImage, Image* inputImage, Video* inputVide
         break;
     case 4:
         cout << "Performing Stitching...\n";
-        // A ajouter
+        if (isImage) {
+            performStitching(inputImage);
+        }
+        else {
+            "Not available for videos";
+        }
         break;
     case 5:
         cout << "Performing Edge Detection...\n";
@@ -252,6 +257,41 @@ void performChangeColor(Image* inputImage) {
 void performConvertToGray(Image* inputImage) {
     Image grayImage = Operation::ConvertToGray(*inputImage);
     grayImage.display();
+}
+
+void performStitching(Image* inputImage) {
+    vector<Mat> inputImages;
+
+    Mat firstMat = inputImage->getImage();
+    inputImages.push_back(firstMat);
+
+    char addMore;
+    do {
+        string filePath;
+        cout << "Enter the path to the next input image (or 'n' to stop): ";
+        cin >> filePath;
+
+        if (filePath == "n") {
+            break;
+        }
+
+        Mat image = imread(filePath);
+        if (image.empty()) {
+            cout << "Could not open or find the image: " << filePath << endl;
+        }
+        else {
+            inputImages.push_back(image);
+        }
+
+    } while (true);
+
+    if (inputImages.size() < 2) {
+        cout << "Need at least two images to perform stitching." << endl;
+        return;
+    }
+
+    Image stitchedImage = Operation::Stitching(inputImages);
+    stitchedImage.display();
 }
 
 //Add stitching
