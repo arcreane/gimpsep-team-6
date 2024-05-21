@@ -156,14 +156,26 @@ void performStitching() {
         cout << "Enter the path to the input image: ";
         cin >> imagePath;
         Image inputImage(imagePath);
-        inputImage.display();
-
         Mat inputMatrice = inputImage.getImage();
         inputImages.push_back(inputMatrice);
     }
 
     Image outputImage = Operation::Stitching(inputImages);
     outputImage.display();
+}
+
+void performAddWatermark(Image& inputImage) {
+    string logoPath;
+    cout << "Enter the path to the logo image: ";
+    cin >> logoPath;
+    Image logo(logoPath);
+
+    double alpha;
+    cout << "Enter the alpha (between 0 and 1): ";
+    cin >> alpha;
+
+    Image watermarkImage = Operation::AddWatermark(inputImage, logo, alpha);
+    watermarkImage.display();
 }
 
 int main() {
@@ -183,7 +195,8 @@ int main() {
         << "[6] Crop\n"
         << "[7] Rotation\n"
         << "[8] Change color\n"
-        << "[9] Convert to gray\n";
+        << "[9] Convert to gray\n"
+        << "[10] Add a watermark\n";
     cin >> choice;
 
     switch (choice) {
@@ -222,6 +235,10 @@ int main() {
     case 9:
         cout << "Performing Convert to gray...\n";
         performConvertToGray(inputImage);
+        break;
+    case 10:
+        cout << "Performing Add a watermark...\n";
+        performAddWatermark(inputImage);
         break;
     default:
         cout << "Invalid choice!\n";

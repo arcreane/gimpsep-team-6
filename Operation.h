@@ -12,5 +12,6 @@ public:
 	static Image Rotation(Image inputImage, double rotationAngle);
 	static Image ChangeColor(Image inputImage, int colorVariation);
 	static Image ConvertToGray(Image inputImage);
+	static Image AddWatermark(Image inputImage, Image logo, double alpha);
 };
 
