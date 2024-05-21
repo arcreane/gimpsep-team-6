@@ -1,3 +1,4 @@
+#pragma once
 #include "operation.h"
 #include <opencv2/opencv.hpp>
 
@@ -57,8 +58,8 @@ Image Operation::BrightnessChange(Image inputImage, float factor, bool isBrightn
 		inputImage.getImage().convertTo(outputMat, -1, 1, intFactor);
 	}
 	else {
-		const int minSaturationFactor = 0.0f;
-		const int maxSaturationFactor = 3.0f;
+		const float minSaturationFactor = 0.0f;
+		const float maxSaturationFactor = 3.0f;
 		if (factor < minSaturationFactor) {
 			factor = minSaturationFactor;
 		}

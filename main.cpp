@@ -1,232 +1,71 @@
 #include <iostream>
-#include "image.h"
-#include "Operation.h"
-#include "video.h"
+#include "process.h"
 
 using namespace std;
 using namespace cv;
 
-void performCannyEdgeDetection(Image& inputImage) {
-    double lowThreshold, highThreshold;
-    cout << "Enter the low threshold: ";
-    cin >> lowThreshold;
-    cout << "Enter the high threshold: ";
-    cin >> highThreshold;
+int main() {     
+    char typeChoice;
+    bool isImage;
+    cout << "Do you want to process an image [i] or a video [v] ?";
+    cin >> typeChoice;
 
-    double kernel;
-    cout << "Enter the kernel size: ";
-    cin >> kernel;
+    Image* inputImage = nullptr;
+    Video* inputVideo = nullptr;
 
-    Image outputImage = Operation::CannyEdgeDetection(inputImage, lowThreshold, highThreshold, kernel);
-    outputImage.display();
-}
-
-void performErosionDilation(Image& inputImage) {
-    char choice;
-    cout << "Do you want to perform erosion (e) or dilation (d)? ";
-    cin >> choice;
-
-    bool isErosion;
-    if (choice == 'e' || choice == 'E') {
-        isErosion = true;
+    if (typeChoice == 'i' || typeChoice == 'I') {
+        isImage = true;
+    }
+    else if (typeChoice == 'v' || typeChoice == 'V') {
+        isImage = false;
     }
     else {
-        isErosion = false;
+        cout << "The input is not correct." << endl;
+        return 1; // Exit the program if the input is not correct
     }
 
-    int size;
-    cout << "Enter the size for erosion/dilation (between 0 and 30): ";
-    cin >> size;
+    try {
+        if (isImage) {
+            string imagePath;
+            imagePath = "C:/Users/marie/OneDrive - ISEP/Isep/A2/S2/Appli multimedia/TP/TP2/TP2/img/HappyFish.jpg";
+            //cout << "Enter the path to the input image: ";
+            //cin >> imagePath;
+            inputImage = new Image(imagePath); 
+            inputImage->display();
+        }
+        else {
+            string videoPath;
+            videoPath = "C:/Users/marie/OneDrive - ISEP/Isep/A2/S2/Appli multimedia/TP/TP2/TP2/img/chaplin.mp4";
 
-    Image outputImage = Operation::DilatationOrErosion(inputImage, size, isErosion);
-    outputImage.display();
+            //cout << "Enter the path to the input video: ";
+            //cin >> videoPath;
+            inputVideo = new Video(videoPath); 
+            inputVideo->display();
+        }
 
-}
+        int choice;
+        cout << "Enter choice of what you want to do:\n"
+            << "[1] DilationOrErosion\n"
+            << "[2] Resizing\n"
+            << "[3] Brightness Change\n"
+            << "[4] Stitching\n"
+            << "[5] Edge Detection\n"
+            << "[6] Crop\n"
+            << "[7] Rotation\n"
+            << "[8] Change color\n"
+            << "[9] Convert to gray\n";
+        cin >> choice;
 
-void performResizing(Image& inputImage) {
-    char choice;
-    cout << "Do you want to specify new dimensions (d) or a resizing factor (f)? ";
-    cin >> choice;
+        processChoice(choice, isImage, inputImage, inputVideo);
 
-    if (choice == 'd' || choice == 'D') {
-        int width, height;
-        cout << "Enter the new dimensions (width height): ";
-        cin >> width >> height;
-
-        Image outputImage = Operation::Resizing(inputImage, 0, width, height);
-        outputImage.display();
+        if (inputImage) delete inputImage;
+        if (inputVideo) delete inputVideo;
     }
-    else if (choice == 'f' || choice == 'F') {
-        float factor;
-        cout << "Enter the resizing factor (> 0): ";
-        cin >> factor;
-
-        Image outputImage = Operation::Resizing(inputImage, factor, 0, 0);
-        outputImage.display();
+    catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
+        return 1;
     }
-    else {
-        cout << "Invalid choice." << endl;
-    }
-
-
-}
-
-void performBrightnessChange(Image& inputImage) {
-    char choice;
-    cout << "Do you want to perform a brightness change (b) or saturation change (s)? ";
-    cin >> choice;
-    float factor;
-
-    if (choice == 'b' || choice == 'B') {
-        cout << "Enter the brightness factor (between -255 and 255): ";
-        cin >> factor;
-
-        Image outputImage = Operation::BrightnessChange(inputImage, factor, true);
-        outputImage.display();
-    }
-    else if (choice == 's' || choice == 'S') {
-        cout << "Enter the saturation factor (between 0 and 3): ";
-        cin >> factor;
-
-        Image outputImage = Operation::BrightnessChange(inputImage, factor, false);
-        outputImage.display();
-    }
-    else {
-        cout << "Invalid choice." << endl;
-    }
-
-
-}
-
-void performCrop(Image& inputImage) {
-    int xmin, xmax, ymin, ymax;
-
-    cout << "Enter the value for ymin (min: 0): ";
-    cin >> ymin;
-    cout << "Enter the value for ymax (max: " << inputImage.getDimensions().height << "): ";
-    cin >> ymax;
-    cout << "Enter the value for xmin (min: 0): ";
-    cin >> xmin;
-    cout << "Enter the value for xmax (max: " << inputImage.getDimensions().width << "): ";
-    cin >> xmax;
-
-    if (xmin < 0 || xmax > inputImage.getDimensions().width || ymin < 0 || ymax > inputImage.getDimensions().height || xmin >= xmax || ymin >= ymax) {
-        cout << "Invalid crop dimensions." << endl;
-        return;
-    }
-
-    Image outputImage = Operation::Crop(inputImage, ymin, ymax, xmin, xmax);
-    outputImage.display();
-
-}
-
-void performRotation(Image& inputImage) {
-    double rotationAngle;
-    cout << "Enter the rotation angle: ";
-    cin >> rotationAngle;
-
-    Image rotatedImage = Operation::Rotation(inputImage, rotationAngle);
-
-    rotatedImage.display();
-}
-
-void performChangeColor(Image& inputImage) {
-    int colorVariation;
-    cout << "Enter the color variation value (between -180 and 180): ";
-    cin >> colorVariation;
-
-    Image changedImage = Operation::ChangeColor(inputImage, colorVariation);
-
-    changedImage.display();
-}
-
-void performConvertToGray(Image& inputImage) {
-    Image grayImage = Operation::ConvertToGray(inputImage);
-    grayImage.display();
-}
-
-void performStitching() {
-    int nbImages;
-    cout << "Enter the number of images you want to stitch: ";
-    cin >> nbImages;
-
-    vector<Mat> inputImages;
-    for (int i = 0; i < nbImages; i++) {
-        string imagePath;
-        cout << "Enter the path to the input image: ";
-        cin >> imagePath;
-        Image inputImage(imagePath);
-        inputImage.display();
-
-        Mat inputMatrice = inputImage.getImage();
-        inputImages.push_back(inputMatrice);
-    }
-
-    Image outputImage = Operation::Stitching(inputImages);
-    outputImage.display();
-}
-
-int main() {
-    string imagePath;
-    cout << "Enter the path to the input image: ";
-    cin >> imagePath;
-    Image inputImage(imagePath);
-    inputImage.display();
-
-    int choice;
-    cout << "Enter choice of what you want to do:\n"
-        << "[1] DilationOrErosion\n"
-        << "[2] Resizing\n"
-        << "[3] Brightness Change\n"
-        << "[4] Stitching\n"
-        << "[5] Edge Detection\n"
-        << "[6] Crop\n"
-        << "[7] Rotation\n"
-        << "[8] Change color\n"
-        << "[9] Convert to gray\n";
-    cin >> choice;
-
-    switch (choice) {
-    case 1:
-        cout << "Performing DilationOrErosion...\n";
-        performErosionDilation(inputImage);
-        break;
-    case 2:
-        cout << "Performing Resizing...\n";
-        performResizing(inputImage);
-        break;
-    case 3:
-        cout << "Performing Brightness Change...\n";
-        performBrightnessChange(inputImage);
-        break;
-    case 4:
-        cout << "Performing Stitching...\n";
-        performStitching();
-        break;
-    case 5:
-        cout << "Performing Edge Detection...\n";
-        performCannyEdgeDetection(inputImage);
-        break;
-    case 6:
-        cout << "Performing Crop...\n";
-        performCrop(inputImage);
-        break;
-    case 7:
-        cout << "Performing Rotation...\n";
-        performRotation(inputImage);
-        break;
-    case 8:
-        cout << "Performing Change color...\n";
-        performChangeColor(inputImage);
-        break;
-    case 9:
-        cout << "Performing Convert to gray...\n";
-        performConvertToGray(inputImage);
-        break;
-    default:
-        cout << "Invalid choice!\n";
-        break;
-    }
+    
 
     return 0;
 }
