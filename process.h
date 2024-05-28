@@ -21,5 +21,6 @@ void performChangeColor(Image* inputImage);
 void performConvertToGray(Image* inputImage);
 //void performConvertToGrayVideo(Video* inputVideo);
 void performAddWatermark(Image* inputImage);
+void performAddWatermarkVideo(Video* inputVideo);
 
 void processChoice(int choice, bool isImage, Image* inputImage, Video* inputVideo);

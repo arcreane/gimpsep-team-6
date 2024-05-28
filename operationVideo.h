@@ -14,4 +14,5 @@ public:
     //static Video Rotation(Video inputVideo, double rotationAngle);
     //static Video ChangeColor(Video inputVideo, int colorVariation);
     //static Video ConvertToGray(Video inputVideo);
+    static std::function<Mat(const Mat&)> AddWatermark(Image logo, double alpha);
 };

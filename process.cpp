@@ -97,6 +97,9 @@ void processChoice(int choice, bool isImage, Image* inputImage, Video* inputVide
         if (isImage) {
             performAddWatermark(inputImage);
         }
+        else {
+            performAddWatermarkVideo(inputVideo);
+        }
         break;
     default:
         cout << "Invalid choice!\n";
@@ -312,4 +315,18 @@ void performAddWatermark(Image* inputImage) {
 
     Image watermarkImage = Operation::AddWatermark(*inputImage, logo, alpha);
     watermarkImage.display();
+}
+
+void performAddWatermarkVideo(Video* inputVideo) {
+    string logoPath;
+    cout << "Enter the path to the logo image: ";
+    cin >> logoPath;
+    Image logo(logoPath);
+
+    double alpha;
+    cout << "Enter the alpha (between 0 and 1): ";
+    cin >> alpha;
+
+    Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::AddWatermark(logo, alpha));
+    outputVideo.display();
 }
