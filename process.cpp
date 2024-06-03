@@ -5,6 +5,7 @@
 #include "Operation.h"
 #include "video.h"
 #include "operationVideo.h"
+#include "faceRecognition.h"
 
 using namespace std;
 using namespace cv;
@@ -100,6 +101,15 @@ void processChoice(int choice, bool isImage, Image* inputImage, Video* inputVide
         else {
             performAddWatermarkVideo(inputVideo);
         }
+        break;
+    case 11:
+        cout << "Performing image recognition...\n";
+        if (isImage) {
+            performDetection(inputImage);
+        }
+        /*else {
+            performDetectionVideo(inputVideo);
+        }*/
         break;
     default:
         cout << "Invalid choice!\n";
@@ -329,4 +339,61 @@ void performAddWatermarkVideo(Video* inputVideo) {
 
     Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::AddWatermark(logo, alpha));
     outputVideo.display();
+}
+//Add stitching
+
+void performDetection(Image* inputImage) {
+    Mat image = inputImage->getImage();
+    vector<FaceRecognizer*> faceRecognizers = getFaceRecognizers();
+
+    for (auto& faceRecognizer : faceRecognizers) {
+        // Detect faces using the current FaceRecognizer
+        vector<Rect> detections = faceRecognizer->detectFaces(image);
+
+        // Draw rectangles around detected objects
+        for (const auto& detection : detections) {
+            rectangle(image, detection, Scalar(255, 0, 0), 2); // Draw blue rectangles
+        }
+    }
+
+    // Display the result
+    imshow("Detected Objects", image);
+    waitKey(0);
+}
+
+vector<FaceRecognizer*> getFaceRecognizers() {
+    int choice;
+    cout << "Enter choice of what you want to detect:\n"
+        << "[1] Profile face\n"
+        << "[2] Smile\n"
+        << "[3] Cat profile face\n"
+        << "[4] Russian car plate\n"
+        << "[5] Parts of face\n";
+    cin >> choice;
+
+    vector<FaceRecognizer*> faceRecognizers;
+
+    switch (choice) {
+    case 1:
+        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_frontalface_alt.xml"));
+        break;
+    case 2:
+        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_smile.xml"));
+        break;
+    case 3:
+        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_frontalcatface.xml"));
+        break;
+    case 4:
+        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_russian_plate_number.xml"));
+        break;
+    case 5:
+        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_frontalface_alt.xml"));
+        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_smile.xml"));
+        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_eye.xml"));
+        break;
+    default:
+        cout << "Invalid choice!\n";
+        break;
+    }
+    return faceRecognizers; // Return nullptr in case of invalid choice or unhandled cases
 }
