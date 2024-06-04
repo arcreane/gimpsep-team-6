@@ -140,7 +140,6 @@
     <ClCompile Include="Operation.cpp" />
     <ClCompile Include="operationVideo.cpp" />
     <ClCompile Include="process.cpp" />
-    <ClCompile Include="test.cpp" />
     <ClCompile Include="video.cpp" />
   </ItemGroup>
   <ItemGroup>
