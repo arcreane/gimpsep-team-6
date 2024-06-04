@@ -2,6 +2,7 @@
 #include <iostream>
 #include "image.h"
 #include "video.h"
+#include "faceRecognition.h"
 
 void performErosionDilation(Image* inputImage);
 void performErosionDilationVideo(Video* inputVideo);
@@ -20,5 +21,11 @@ void performChangeColor(Image* inputImage);
 //void performChangeColorVideo(Video* inputVideo);
 void performConvertToGray(Image* inputImage);
 //void performConvertToGrayVideo(Video* inputVideo);
+void performAddWatermark(Image* inputImage);
+void performAddWatermarkVideo(Video* inputVideo);
+void performDetection(Image* inputImage);
+//void performDetectionVideo(Video* inputVideo);
+
+vector<FaceRecognizer*> getFaceRecognizers();
 
 void processChoice(int choice, bool isImage, Image* inputImage, Video* inputVideo);

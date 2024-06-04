@@ -144,33 +144,6 @@ Image Operation::ConvertToGray(Image inputImage) {
 	return Image(result);
 }
 
-<<<<<<< HEAD
 
 //Image Operation::Stitching(Image* images) {}
-=======
-Image Operation::Stitching(Image imageRight, Image imageLeft) {
-	Mat inputImageRight = imageRight.getImage();
-	Mat inputImageLeft = imageLeft.getImage();
 
-	vector<Mat> inputImages;
-	inputImages.push_back(inputImageRight);
-	inputImages.push_back(inputImageLeft);
-
-=======
-Image Operation::Stitching(vector<Mat> inputImages) {
->>>>>>> suppression commentaire
-	Stitcher::Mode mode = Stitcher::PANORAMA;
-	Ptr<Stitcher> stitcher = Stitcher::create(mode);
-
-	Mat outputMat;
-	Stitcher::Status status = stitcher->stitch(inputImages, outputMat);
->>>>>>> fonction stitching
-
-	// look for errors
-	if (status != Stitcher::OK) {
-		cout << "Stiching failed.\n";
-		return inputImageRight;
-	}
-
-	return Image(outputMat);
-}

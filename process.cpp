@@ -5,6 +5,7 @@
 #include "Operation.h"
 #include "video.h"
 #include "operationVideo.h"
+#include "faceRecognition.h"
 
 using namespace std;
 using namespace cv;
@@ -90,6 +91,24 @@ void processChoice(int choice, bool isImage, Image* inputImage, Video* inputVide
         }
         /*else {
             performConvertToGrayVideo(inputVideo);
+        }*/
+        break;
+    case 10:
+        cout << "Performing Add a watermark...\n";
+        if (isImage) {
+            performAddWatermark(inputImage);
+        }
+        else {
+            performAddWatermarkVideo(inputVideo);
+        }
+        break;
+    case 11:
+        cout << "Performing image recognition...\n";
+        if (isImage) {
+            performDetection(inputImage);
+        }
+        /*else {
+            performDetectionVideo(inputVideo);
         }*/
         break;
     default:
@@ -259,39 +278,3 @@ void performConvertToGray(Image* inputImage) {
     grayImage.display();
 }
 
-void performStitching(Image* inputImage) {
-    vector<Mat> inputImages;
-
-    Mat firstMat = inputImage->getImage();
-    inputImages.push_back(firstMat);
-
-    char addMore;
-    do {
-        string filePath;
-        cout << "Enter the path to the next input image (or 'n' to stop): ";
-        cin >> filePath;
-
-        if (filePath == "n") {
-            break;
-        }
-
-        Mat image = imread(filePath);
-        if (image.empty()) {
-            cout << "Could not open or find the image: " << filePath << endl;
-        }
-        else {
-            inputImages.push_back(image);
-        }
-
-    } while (true);
-
-    if (inputImages.size() < 2) {
-        cout << "Need at least two images to perform stitching." << endl;
-        return;
-    }
-
-    Image stitchedImage = Operation::Stitching(inputImages);
-    stitchedImage.display();
-}
-
-//Add stitching

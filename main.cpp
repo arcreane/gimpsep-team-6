@@ -54,7 +54,9 @@ int main() {
             << "[6] Crop\n"
             << "[7] Rotation\n"
             << "[8] Change color\n"
-            << "[9] Convert to gray\n";
+            << "[9] Convert to gray\n"
+            << "[10] Add a watermark\n"
+            << "[11] Image recognition\n";
         cin >> choice;
 
         processChoice(choice, isImage, inputImage, inputVideo);

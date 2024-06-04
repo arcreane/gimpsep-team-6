@@ -43,3 +43,12 @@ std::function<Mat(const Mat&)> OperationVideo::DilatationOrErosion(int size, boo
         return processedImg.getImage();
         };
 }
+
+
+std::function<Mat(const Mat&)> OperationVideo::AddWatermark(Image logo, double alpha) {
+    return [logo, alpha](const Mat& frame) -> Mat {
+        Image img(frame);
+        Image processedImg = Operation::AddWatermark(img, logo, alpha);
+        return processedImg.getImage();
+    };
+}
