@@ -463,16 +463,13 @@ void performDetection(Image* inputImage) {
     vector<FaceRecognizer*> faceRecognizers = getFaceRecognizers();
 
     for (auto& faceRecognizer : faceRecognizers) {
-        // Detect faces using the current FaceRecognizer
         vector<Rect> detections = faceRecognizer->detectFaces(image);
 
-        // Draw rectangles around detected objects
         for (const auto& detection : detections) {
-            rectangle(image, detection, Scalar(255, 0, 0), 2); // Draw blue rectangles
+            rectangle(image, detection, Scalar(255, 0, 0), 2);
         }
     }
 
-    // Display the result
     imshow("Detected Objects", image);
     waitKey(0);
 }
@@ -489,27 +486,39 @@ vector<FaceRecognizer*> getFaceRecognizers() {
 
     vector<FaceRecognizer*> faceRecognizers;
 
+    string haarPath;
+
+    char* buf = nullptr;
+    size_t sz = 0;
+    if (_dupenv_s(&buf, &sz, "HAAR_PATH") == 0 && buf != nullptr)
+    {
+        printf("EnvVarName = %s\n", buf);
+        haarPath = buf;
+        free(buf);
+    }
+
     switch (choice) {
     case 1:
-        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_frontalface_alt.xml"));
+        faceRecognizers.push_back(new FaceRecognizer(haarPath + "haarcascade_frontalface_alt.xml"));
         break;
     case 2:
-        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_smile.xml"));
+        faceRecognizers.push_back(new FaceRecognizer(haarPath + "haarcascade_smile.xml"));
         break;
     case 3:
-        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_frontalcatface.xml"));
+        faceRecognizers.push_back(new FaceRecognizer(haarPath + "haarcascade_frontalcatface.xml"));
         break;
     case 4:
-        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_russian_plate_number.xml"));
+        faceRecognizers.push_back(new FaceRecognizer(haarPath + "haarcascade_russian_plate_number.xml"));
         break;
     case 5:
-        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_frontalface_alt.xml"));
-        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_smile.xml"));
-        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_eye.xml"));
+        faceRecognizers.push_back(new FaceRecognizer(haarPath + "haarcascade_frontalface_alt.xml"));
+        faceRecognizers.push_back(new FaceRecognizer(haarPath + "haarcascade_smile.xml"));
+        faceRecognizers.push_back(new FaceRecognizer(haarPath + "haarcascade_eye.xml"));
         break;
     default:
         cout << "Invalid choice!\n";
         break;
     }
-    return faceRecognizers; // Return nullptr in case of invalid choice or unhandled cases
+    
+    return faceRecognizers;
 }
