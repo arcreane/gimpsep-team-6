@@ -145,5 +145,17 @@ Image Operation::ConvertToGray(Image inputImage) {
 }
 
 
-//Image Operation::Stitching(Image* images) {}
+Image Operation::Stitching(vector<Mat> inputImages) {
+	Stitcher::Mode mode = Stitcher::PANORAMA;
+	Ptr<Stitcher> stitcher = Stitcher::create(mode);
+
+	Mat outputMat;
+	Stitcher::Status status = stitcher->stitch(inputImages, outputMat);
+
+	if (status != Stitcher::OK) {
+		cout << "Stiching failed.\n";
+	}
+
+	return Image(outputMat);
+}
 

@@ -44,11 +44,58 @@ std::function<Mat(const Mat&)> OperationVideo::DilatationOrErosion(int size, boo
         };
 }
 
-
-std::function<Mat(const Mat&)> OperationVideo::AddWatermark(Image logo, double alpha) {
-    return [logo, alpha](const Mat& frame) -> Mat {
+std::function<Mat(const Mat&)> OperationVideo::Resizing(float factor, int width, int height) {
+    return [factor, width, height](const Mat& frame) -> Mat {
         Image img(frame);
-        Image processedImg = Operation::AddWatermark(img, logo, alpha);
+        Image processedImg = Operation::Resizing(img, factor, width, height);
         return processedImg.getImage();
-    };
+        };
+}
+
+std::function<Mat(const Mat&)> OperationVideo::BrightnessChange(float factor, bool isBrightness) {
+    return [factor, isBrightness](const Mat& frame) -> Mat {
+        Image img(frame);
+        Image processedImg = Operation::BrightnessChange(img, factor, isBrightness);
+        return processedImg.getImage();
+        };
+}
+
+std::function<Mat(const Mat&)> OperationVideo::CannyEdgeDetection(double lowThreshold, double highThreshold, double kernel) {
+    return [lowThreshold, highThreshold, kernel](const Mat& frame) -> Mat {
+        Image img(frame);
+        Image processedImg = Operation::CannyEdgeDetection(img, lowThreshold, highThreshold, kernel);
+        return processedImg.getImage();
+        };
+}
+
+std::function<Mat(const Mat&)> OperationVideo::Crop(int ymin, int ymax, int xmin, int xmax) {
+    return [ymin, ymax, xmin, xmax](const Mat& frame) -> Mat {
+        Image img(frame);
+        Image processedImg = Operation::Crop(img, ymin, ymax, xmin, xmax);
+        return processedImg.getImage();
+        };
+}
+
+std::function<Mat(const Mat&)> OperationVideo::Rotation(double rotationAngle) {
+    return [rotationAngle](const Mat& frame) -> Mat {
+        Image img(frame);
+        Image processedImg = Operation::Rotation(img, rotationAngle);
+        return processedImg.getImage();
+        };
+}
+
+std::function<Mat(const Mat&)> OperationVideo::ChangeColor(int colorVariation) {
+    return [colorVariation](const Mat& frame) -> Mat {
+        Image img(frame);
+        Image processedImg = Operation::ChangeColor(img, colorVariation);
+        return processedImg.getImage();
+        };
+}
+
+std::function<Mat(const Mat&)> OperationVideo::ConvertToGray() {
+    return [](const Mat& frame) -> Mat {
+        Image img(frame);
+        Image processedImg = Operation::ConvertToGray(img);
+        return processedImg.getImage();
+        };
 }

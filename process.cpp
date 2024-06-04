@@ -26,18 +26,18 @@ void processChoice(int choice, bool isImage, Image* inputImage, Video* inputVide
         if (isImage) {
             performResizing(inputImage);
         }
-        /*else {
+        else {
             performResizingVideo(inputVideo);
-        }*/
+        }
         break;
     case 3:
         cout << "Performing Brightness Change...\n";
         if (isImage) {
             performBrightnessChange(inputImage);
         }
-        /*else {
+        else {
             performBrightnessChangeVideo(inputVideo);
-        }*/
+        }
         break;
     case 4:
         cout << "Performing Stitching...\n";
@@ -45,7 +45,7 @@ void processChoice(int choice, bool isImage, Image* inputImage, Video* inputVide
             performStitching(inputImage);
         }
         else {
-            "Not available for videos";
+            cout << "Stitching on videos not available.";
         }
         break;
     case 5:
@@ -53,45 +53,45 @@ void processChoice(int choice, bool isImage, Image* inputImage, Video* inputVide
         if (isImage) {
             performCannyEdgeDetection(inputImage);
         }
-        /*else {
+        else {
             performCannyEdgeDetectionVideo(inputVideo);
-        }*/
+        }
         break;
     case 6:
         cout << "Performing Crop...\n";
         if (isImage) {
             performCrop(inputImage);
         }
-        /*else {
+        else {
             performCropVideo(inputVideo);
-        }*/
+        }
         break;
     case 7:
         cout << "Performing Rotation...\n";
         if (isImage) {
             performRotation(inputImage);
         }
-        /*else {
+        else {
             performRotationVideo(inputVideo);
-        }*/
+        }
         break;
     case 8:
         cout << "Performing Change color...\n";
         if (isImage) {
             performChangeColor(inputImage);
         }
-        /*else {
+        else {
             performChangeColorVideo(inputVideo);
-        }*/
+        }
         break;
     case 9:
         cout << "Performing Convert to gray...\n";
         if (isImage) {
             performConvertToGray(inputImage);
         }
-        /*else {
+        else {
             performConvertToGrayVideo(inputVideo);
-        }*/
+        }
         break;
     case 10:
         cout << "Performing Add a watermark...\n";
@@ -130,6 +130,21 @@ void performCannyEdgeDetection(Image* inputImage) {
 
     Image outputImage = Operation::CannyEdgeDetection(*inputImage, lowThreshold, highThreshold, kernel);
     outputImage.display();
+}
+
+void performCannyEdgeDetectionVideo(Video* inputVideo) {
+    double lowThreshold, highThreshold;
+    cout << "Enter the low threshold: ";
+    cin >> lowThreshold;
+    cout << "Enter the high threshold: ";
+    cin >> highThreshold;
+
+    double kernel;
+    cout << "Enter the kernel size: ";
+    cin >> kernel;
+
+    Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::CannyEdgeDetection(lowThreshold, highThreshold, kernel));
+    outputVideo.display();
 }
 
 void performErosionDilation(Image* inputImage) {
@@ -204,6 +219,34 @@ void performResizing(Image* inputImage) {
 
 }
 
+void performResizingVideo(Video* inputVideo) {
+    char choice;
+    cout << "Do you want to specify new dimensions (d) or a resizing factor (f)? ";
+    cin >> choice;
+
+    if (choice == 'd' || choice == 'D') {
+        int width, height;
+        cout << "Enter the new dimensions (width height): ";
+        cin >> width >> height;
+
+        Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::Resizing(0, width, height));
+        outputVideo.display();
+    }
+    else if (choice == 'f' || choice == 'F') {
+        float factor;
+        cout << "Enter the resizing factor (> 0): ";
+        cin >> factor;
+
+        Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::Resizing(factor, 0, 0));
+        outputVideo.display();
+    }
+    else {
+        cout << "Invalid choice." << endl;
+    }
+
+
+}
+
 void performBrightnessChange(Image* inputImage) {
     char choice;
     cout << "Do you want to perform a brightness change (b) or saturation change (s)? ";
@@ -223,6 +266,33 @@ void performBrightnessChange(Image* inputImage) {
 
         Image outputImage = Operation::BrightnessChange(*inputImage, factor, false);
         outputImage.display();
+    }
+    else {
+        cout << "Invalid choice." << endl;
+    }
+
+
+}
+
+void performBrightnessChangeVideo(Video* inputVideo) {
+    char choice;
+    cout << "Do you want to perform a brightness change (b) or saturation change (s)? ";
+    cin >> choice;
+    float factor;
+
+    if (choice == 'b' || choice == 'B') {
+        cout << "Enter the brightness factor (between -255 and 255): ";
+        cin >> factor;
+
+        Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::BrightnessChange(factor, true));
+        outputVideo.display();
+    }
+    else if (choice == 's' || choice == 'S') {
+        cout << "Enter the saturation factor (between 0 and 3): ";
+        cin >> factor;
+
+        Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::BrightnessChange(factor, false));
+        outputVideo.display();
     }
     else {
         cout << "Invalid choice." << endl;
@@ -253,6 +323,28 @@ void performCrop(Image* inputImage) {
 
 }
 
+void performCropVideo(Video* inputVideo) {
+    int xmin, xmax, ymin, ymax;
+
+    cout << "Enter the value for ymin (min: 0): ";
+    cin >> ymin;
+    cout << "Enter the value for ymax (max: " << inputVideo->getDimensions().height << "): ";
+    cin >> ymax;
+    cout << "Enter the value for xmin (min: 0): ";
+    cin >> xmin;
+    cout << "Enter the value for xmax (max: " << inputVideo->getDimensions().width << "): ";
+    cin >> xmax;
+
+    if (xmin < 0 || xmax > inputVideo->getDimensions().width || ymin < 0 || ymax > inputVideo->getDimensions().height || xmin >= xmax || ymin >= ymax) {
+        cout << "Invalid crop dimensions." << endl;
+        return;
+    }
+
+    Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::Crop(ymin, ymax, xmin, xmax));
+    outputVideo.display();
+
+}
+
 void performRotation(Image* inputImage) {
     double rotationAngle;
     cout << "Enter the rotation angle: ";
@@ -261,6 +353,15 @@ void performRotation(Image* inputImage) {
     Image rotatedImage = Operation::Rotation(*inputImage, rotationAngle);
 
     rotatedImage.display();
+}
+
+void performRotationVideo(Video* inputVideo) {
+    double rotationAngle;
+    cout << "Enter the rotation angle: ";
+    cin >> rotationAngle;
+
+    Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::Rotation(rotationAngle));
+    outputVideo.display();
 }
 
 void performChangeColor(Image* inputImage) {
@@ -273,8 +374,58 @@ void performChangeColor(Image* inputImage) {
     changedImage.display();
 }
 
+//A tester sur une vidéo colorée!!
+void performChangeColorVideo(Video* inputVideo) {
+    int colorVariation;
+    cout << "Enter the color variation value (between -180 and 180): ";
+    cin >> colorVariation;
+
+    Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::ChangeColor(colorVariation));
+    outputVideo.display();
+}
+
 void performConvertToGray(Image* inputImage) {
     Image grayImage = Operation::ConvertToGray(*inputImage);
     grayImage.display();
 }
 
+//A tester sur une vidéo colorée!!
+void performConvertToGrayVideo(Video* inputVideo) {
+    Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::ConvertToGray());
+    outputVideo.display();
+}
+
+void performStitching(Image* inputImage) {
+    vector<Mat> inputImages;
+
+    Mat firstMat = inputImage->getImage();
+    inputImages.push_back(firstMat);
+
+    char addMore;
+    do {
+        string filePath;
+        cout << "Enter the path to the next input image (or 'n' to stop): ";
+        cin >> filePath;
+
+        if (filePath == "n") {
+            break;
+        }
+
+        Mat image = imread(filePath);
+        if (image.empty()) {
+            cout << "Could not open or find the image: " << filePath << endl;
+        }
+        else {
+            inputImages.push_back(image);
+        }
+
+    } while (true);
+
+    if (inputImages.size() < 2) {
+        cout << "Need at least two images to perform stitching." << endl;
+        return;
+    }
+
+    Image stitchedImage = Operation::Stitching(inputImages);
+    stitchedImage.display();
+}
