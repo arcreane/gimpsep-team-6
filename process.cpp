@@ -401,7 +401,7 @@ void performStitching(Image* inputImage) {
     Mat firstMat = inputImage->getImage();
     inputImages.push_back(firstMat);
 
-    char addMore;
+    char addMore = 0;
     do {
         string filePath;
         cout << "Enter the path to the next input image (or 'n' to stop): ";
@@ -428,4 +428,88 @@ void performStitching(Image* inputImage) {
 
     Image stitchedImage = Operation::Stitching(inputImages);
     stitchedImage.display();
+}
+
+void performAddWatermark(Image* inputImage) {
+    string logoPath;
+    cout << "Enter the path to the logo image: ";
+    cin >> logoPath;
+    Image logo(logoPath);
+
+    double alpha;
+    cout << "Enter the alpha (between 0 and 1): ";
+    cin >> alpha;
+
+    Image watermarkImage = Operation::AddWatermark(*inputImage, logo, alpha);
+    watermarkImage.display();
+}
+
+void performAddWatermarkVideo(Video* inputVideo) {
+    string logoPath;
+    cout << "Enter the path to the logo image: ";
+    cin >> logoPath;
+    Image logo(logoPath);
+
+    double alpha;
+    cout << "Enter the alpha (between 0 and 1): ";
+    cin >> alpha;
+
+    Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::AddWatermark(logo, alpha));
+    outputVideo.display();
+}
+
+void performDetection(Image* inputImage) {
+    Mat image = inputImage->getImage();
+    vector<FaceRecognizer*> faceRecognizers = getFaceRecognizers();
+
+    for (auto& faceRecognizer : faceRecognizers) {
+        // Detect faces using the current FaceRecognizer
+        vector<Rect> detections = faceRecognizer->detectFaces(image);
+
+        // Draw rectangles around detected objects
+        for (const auto& detection : detections) {
+            rectangle(image, detection, Scalar(255, 0, 0), 2); // Draw blue rectangles
+        }
+    }
+
+    // Display the result
+    imshow("Detected Objects", image);
+    waitKey(0);
+}
+
+vector<FaceRecognizer*> getFaceRecognizers() {
+    int choice;
+    cout << "Enter choice of what you want to detect:\n"
+        << "[1] Profile face\n"
+        << "[2] Smile\n"
+        << "[3] Cat profile face\n"
+        << "[4] Russian car plate\n"
+        << "[5] Parts of face\n";
+    cin >> choice;
+
+    vector<FaceRecognizer*> faceRecognizers;
+
+    switch (choice) {
+    case 1:
+        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_frontalface_alt.xml"));
+        break;
+    case 2:
+        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_smile.xml"));
+        break;
+    case 3:
+        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_frontalcatface.xml"));
+        break;
+    case 4:
+        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_russian_plate_number.xml"));
+        break;
+    case 5:
+        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_frontalface_alt.xml"));
+        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_smile.xml"));
+        faceRecognizers.push_back(new FaceRecognizer("C:/Users/lenaf/openCV/opencv/sources/data/haarcascades/haarcascade_eye.xml"));
+        break;
+    default:
+        cout << "Invalid choice!\n";
+        break;
+    }
+    return faceRecognizers; // Return nullptr in case of invalid choice or unhandled cases
 }

@@ -90,7 +90,6 @@ Image Operation::CannyEdgeDetection(Image inputImage, double lowThreshold, doubl
 	return Image(edges);
 }
 
-<<<<<<< HEAD
 Image Operation::Crop(Image inputImage, int ymin, int ymax, int xmin, int xmax) {
 	Size imgSize = inputImage.getDimensions();
 
@@ -159,3 +158,36 @@ Image Operation::Stitching(vector<Mat> inputImages) {
 	return Image(outputMat);
 }
 
+Image Operation::AddWatermark(Image inputImage, Image logo, double alpha) {
+	Mat source = inputImage.getImage();
+	Mat matLogo = logo.getImage();
+	Size logoSize = logo.getDimensions();
+	Size imageSize = inputImage.getDimensions();
+
+	int center_image_x = imageSize.width / 2;
+	int center_image_y = imageSize.height / 2;
+	int center_logo_x = logoSize.width / 2;
+	int center_logo_y = logoSize.height / 2;
+
+	int left = center_image_x - center_logo_x;
+	int right = left + logoSize.width;
+	int top = center_image_y - center_logo_y;
+	int bottom = top + logoSize.height;
+
+	// fix potential errors
+	if (top < 0) { top = 0; }
+	if (left < 0) { left = 0; }
+	if (bottom > imageSize.height) { bottom = imageSize.height; }
+	if (right > imageSize.width) { right = imageSize.width; }
+
+	Mat destination = source(Range(top, bottom), Range(left, right));
+	Mat outputMat;
+	Mat logoToAdd = matLogo(Range(0, bottom - top), Range(0, right - left));
+
+	addWeighted(destination, alpha, logoToAdd, 1.0 - alpha, 0, outputMat);
+
+	Rect roi(left, top, right - left, bottom - top);
+	outputMat.copyTo(source(roi));
+
+	return Image(source);
+}
