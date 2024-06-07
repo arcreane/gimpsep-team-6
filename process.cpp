@@ -489,7 +489,6 @@ vector<FaceRecognizer*> getFaceRecognizers() {
     size_t sz = 0;
     if (_dupenv_s(&buf, &sz, "HAAR_PATH") == 0 && buf != nullptr)
     {
-        printf("EnvVarName = %s\n", buf);
         haarPath = buf;
         free(buf);
     }
