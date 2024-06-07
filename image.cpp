@@ -16,9 +16,16 @@ Image::Image(const Mat& img) {
 }
 
 void Image::display() {
-	namedWindow("Image", WINDOW_AUTOSIZE);
-	imshow("Image", image);
-	waitKey(0);
+	const std::string windowName = "Image";
+	namedWindow(windowName, WINDOW_AUTOSIZE);
+	imshow(windowName, image);
+
+	int key = waitKey(1);
+	if (key == 13 || getWindowProperty(windowName, WND_PROP_VISIBLE) < 1) {
+		if (getWindowProperty(windowName, WND_PROP_VISIBLE) >= 0) {
+			destroyWindow(windowName);
+		}
+	}
 }
 
 void Image::save(const string& path) {

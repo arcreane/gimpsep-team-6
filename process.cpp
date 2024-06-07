@@ -10,114 +10,115 @@
 using namespace std;
 using namespace cv;
 
-void processChoice(int choice, bool isImage, Image* inputImage, Video* inputVideo) {
+Image* processChoice(int choice, Image* inputImage) {
+    Image* outputImage = nullptr;
     switch (choice) {
     case 1:
         cout << "Performing DilationOrErosion...\n";
-        if (isImage) {
-            performErosionDilation(inputImage);
-        }
-        else {
-            performErosionDilationVideo(inputVideo);
-        }
+        outputImage = performErosionDilation(inputImage);
         break;
     case 2:
         cout << "Performing Resizing...\n";
-        if (isImage) {
-            performResizing(inputImage);
-        }
-        else {
-            performResizingVideo(inputVideo);
-        }
+        outputImage = performResizing(inputImage);
         break;
     case 3:
         cout << "Performing Brightness Change...\n";
-        if (isImage) {
-            performBrightnessChange(inputImage);
-        }
-        else {
-            performBrightnessChangeVideo(inputVideo);
-        }
+        outputImage = performBrightnessChange(inputImage);
         break;
     case 4:
         cout << "Performing Stitching...\n";
-        if (isImage) {
-            performStitching(inputImage);
-        }
-        else {
-            cout << "Stitching on videos not available.";
-        }
+        outputImage = performStitching(inputImage);
         break;
     case 5:
         cout << "Performing Edge Detection...\n";
-        if (isImage) {
-            performCannyEdgeDetection(inputImage);
-        }
-        else {
-            performCannyEdgeDetectionVideo(inputVideo);
-        }
+        outputImage = performCannyEdgeDetection(inputImage);
         break;
     case 6:
         cout << "Performing Crop...\n";
-        if (isImage) {
-            performCrop(inputImage);
-        }
-        else {
-            performCropVideo(inputVideo);
-        }
+        outputImage = performCrop(inputImage);
         break;
     case 7:
         cout << "Performing Rotation...\n";
-        if (isImage) {
-            performRotation(inputImage);
-        }
-        else {
-            performRotationVideo(inputVideo);
-        }
+        outputImage = performRotation(inputImage);
         break;
     case 8:
         cout << "Performing Change color...\n";
-        if (isImage) {
-            performChangeColor(inputImage);
-        }
-        else {
-            performChangeColorVideo(inputVideo);
-        }
+        outputImage = performChangeColor(inputImage);
         break;
     case 9:
         cout << "Performing Convert to gray...\n";
-        if (isImage) {
-            performConvertToGray(inputImage);
-        }
-        else {
-            performConvertToGrayVideo(inputVideo);
-        }
+        outputImage = performConvertToGray(inputImage);
         break;
     case 10:
         cout << "Performing Add a watermark...\n";
-        if (isImage) {
-            performAddWatermark(inputImage);
-        }
-        else {
-            performAddWatermarkVideo(inputVideo);
-        }
+        outputImage = performAddWatermark(inputImage);
         break;
     case 11:
         cout << "Performing image recognition...\n";
-        if (isImage) {
-            performDetection(inputImage);
-        }
-        /*else {
-            performDetectionVideo(inputVideo);
-        }*/
+        outputImage = performDetection(inputImage);
         break;
     default:
         cout << "Invalid choice!\n";
         break;
     }
+    return outputImage;
 }
 
-void performCannyEdgeDetection(Image* inputImage) {
+Video* processChoiceVideo(int choice, Video* inputVideo) {
+    Video* outputVideo = nullptr;
+    switch (choice) {
+    case 1:
+        cout << "Performing DilationOrErosion...\n";
+        outputVideo = performErosionDilationVideo(inputVideo);
+        break;
+    case 2:
+        cout << "Performing Resizing...\n";
+        outputVideo = performResizingVideo(inputVideo);
+        break;
+    case 3:
+        cout << "Performing Brightness Change...\n";
+        outputVideo = performBrightnessChangeVideo(inputVideo);
+        break;
+    case 4:
+        cout << "Stitching on videos not available.";
+        break;
+    case 5:
+        cout << "Performing Edge Detection...\n";
+        outputVideo = performCannyEdgeDetectionVideo(inputVideo);
+        break;
+    case 6:
+        cout << "Performing Crop...\n";
+        outputVideo = performCropVideo(inputVideo);
+        break;
+    case 7:
+        cout << "Performing Rotation...\n";
+        outputVideo = performRotationVideo(inputVideo);
+        break;
+    case 8:
+        cout << "Performing Change color...\n";
+        outputVideo = performChangeColorVideo(inputVideo);
+        break;
+    case 9:
+        cout << "Performing Convert to gray...\n";
+        outputVideo = performConvertToGrayVideo(inputVideo);
+        break;
+    case 10:
+        cout << "Performing Add a watermark...\n";
+        outputVideo = performAddWatermarkVideo(inputVideo);
+        break;
+    case 11:
+        cout << "Performing image recognition...\n";
+        //outputVideo = performDetectionVideo(inputVideo);
+        break;
+    default:
+        cout << "Invalid choice!\n";
+        break;
+    }
+    return outputVideo;
+}
+
+
+Image* performCannyEdgeDetection(Image* inputImage) {
     double lowThreshold, highThreshold;
     cout << "Enter the low threshold: ";
     cin >> lowThreshold;
@@ -128,11 +129,11 @@ void performCannyEdgeDetection(Image* inputImage) {
     cout << "Enter the kernel size: ";
     cin >> kernel;
 
-    Image outputImage = Operation::CannyEdgeDetection(*inputImage, lowThreshold, highThreshold, kernel);
-    outputImage.display();
+    Image* outputImage = new Image(Operation::CannyEdgeDetection(*inputImage, lowThreshold, highThreshold, kernel));
+    return outputImage;
 }
 
-void performCannyEdgeDetectionVideo(Video* inputVideo) {
+Video* performCannyEdgeDetectionVideo(Video* inputVideo) {
     double lowThreshold, highThreshold;
     cout << "Enter the low threshold: ";
     cin >> lowThreshold;
@@ -143,11 +144,11 @@ void performCannyEdgeDetectionVideo(Video* inputVideo) {
     cout << "Enter the kernel size: ";
     cin >> kernel;
 
-    Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::CannyEdgeDetection(lowThreshold, highThreshold, kernel));
-    outputVideo.display();
+    Video* outputVideo = new Video(OperationVideo::processVideo(*inputVideo, OperationVideo::CannyEdgeDetection(lowThreshold, highThreshold, kernel)));
+    return outputVideo;
 }
 
-void performErosionDilation(Image* inputImage) {
+Image* performErosionDilation(Image* inputImage) {
     char choice;
     cout << "Do you want to perform erosion (e) or dilation (d)? ";
     cin >> choice;
@@ -164,12 +165,11 @@ void performErosionDilation(Image* inputImage) {
     cout << "Enter the size for erosion/dilation (between 0 and 30): ";
     cin >> size;
 
-    Image outputImage = Operation::DilatationOrErosion(*inputImage, size, isErosion);
-    outputImage.display();
-
+    Image* outputImage = new Image(Operation::DilatationOrErosion(*inputImage, size, isErosion));
+    return outputImage;
 }
 
-void performErosionDilationVideo(Video* inputVideo) {
+Video* performErosionDilationVideo(Video* inputVideo) {
     char choice;
     cout << "Do you want to perform erosion (e) or dilation (d)? ";
     cin >> choice;
@@ -186,12 +186,12 @@ void performErosionDilationVideo(Video* inputVideo) {
     cout << "Enter the size for erosion/dilation (between 0 and 30): ";
     cin >> size;
 
-    Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::DilatationOrErosion(size, isErosion));
-    outputVideo.display();
+    Video* outputVideo = new Video(OperationVideo::processVideo(*inputVideo, OperationVideo::DilatationOrErosion(size, isErosion)));
+    return outputVideo;
 
 }
 
-void performResizing(Image* inputImage) {
+Image* performResizing(Image* inputImage) {
     char choice;
     cout << "Do you want to specify new dimensions (d) or a resizing factor (f)? ";
     cin >> choice;
@@ -201,25 +201,24 @@ void performResizing(Image* inputImage) {
         cout << "Enter the new dimensions (width height): ";
         cin >> width >> height;
 
-        Image outputImage = Operation::Resizing(*inputImage, 0, width, height);
-        outputImage.display();
+        Image* outputImage = new Image(Operation::Resizing(*inputImage, 0, width, height));
+        return outputImage;
     }
     else if (choice == 'f' || choice == 'F') {
         float factor;
         cout << "Enter the resizing factor (> 0): ";
         cin >> factor;
 
-        Image outputImage = Operation::Resizing(*inputImage, factor, 0, 0);
-        outputImage.display();
+        Image* outputImage = new Image(Operation::Resizing(*inputImage, factor, 0, 0));
+        return outputImage;
     }
     else {
         cout << "Invalid choice." << endl;
+        return nullptr;
     }
-
-
 }
 
-void performResizingVideo(Video* inputVideo) {
+Video* performResizingVideo(Video* inputVideo) {
     char choice;
     cout << "Do you want to specify new dimensions (d) or a resizing factor (f)? ";
     cin >> choice;
@@ -229,25 +228,26 @@ void performResizingVideo(Video* inputVideo) {
         cout << "Enter the new dimensions (width height): ";
         cin >> width >> height;
 
-        Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::Resizing(0, width, height));
-        outputVideo.display();
+        Video* outputVideo = new Video(OperationVideo::processVideo(*inputVideo, OperationVideo::Resizing(0, width, height)));
+        return outputVideo;
     }
     else if (choice == 'f' || choice == 'F') {
         float factor;
         cout << "Enter the resizing factor (> 0): ";
         cin >> factor;
 
-        Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::Resizing(factor, 0, 0));
-        outputVideo.display();
+        Video* outputVideo = new Video(OperationVideo::processVideo(*inputVideo, OperationVideo::Resizing(factor, 0, 0)));
+        return outputVideo;
     }
     else {
         cout << "Invalid choice." << endl;
+        return nullptr;
     }
 
 
 }
 
-void performBrightnessChange(Image* inputImage) {
+Image* performBrightnessChange(Image* inputImage) {
     char choice;
     cout << "Do you want to perform a brightness change (b) or saturation change (s)? ";
     cin >> choice;
@@ -257,24 +257,23 @@ void performBrightnessChange(Image* inputImage) {
         cout << "Enter the brightness factor (between -255 and 255): ";
         cin >> factor;
 
-        Image outputImage = Operation::BrightnessChange(*inputImage, factor, true);
-        outputImage.display();
+        Image* outputImage = new Image(Operation::BrightnessChange(*inputImage, factor, true));
+        return outputImage;
     }
     else if (choice == 's' || choice == 'S') {
         cout << "Enter the saturation factor (between 0 and 3): ";
         cin >> factor;
 
-        Image outputImage = Operation::BrightnessChange(*inputImage, factor, false);
-        outputImage.display();
+        Image* outputImage = new Image(Operation::BrightnessChange(*inputImage, factor, false));
+        return outputImage;
     }
     else {
         cout << "Invalid choice." << endl;
+        return nullptr;
     }
-
-
 }
 
-void performBrightnessChangeVideo(Video* inputVideo) {
+Video* performBrightnessChangeVideo(Video* inputVideo) {
     char choice;
     cout << "Do you want to perform a brightness change (b) or saturation change (s)? ";
     cin >> choice;
@@ -284,24 +283,23 @@ void performBrightnessChangeVideo(Video* inputVideo) {
         cout << "Enter the brightness factor (between -255 and 255): ";
         cin >> factor;
 
-        Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::BrightnessChange(factor, true));
-        outputVideo.display();
+        Video* outputVideo = new Video(OperationVideo::processVideo(*inputVideo, OperationVideo::BrightnessChange(factor, true)));
+        return outputVideo;
     }
     else if (choice == 's' || choice == 'S') {
         cout << "Enter the saturation factor (between 0 and 3): ";
         cin >> factor;
 
-        Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::BrightnessChange(factor, false));
-        outputVideo.display();
+        Video* outputVideo = new Video(OperationVideo::processVideo(*inputVideo, OperationVideo::BrightnessChange(factor, false)));
+        return outputVideo;
     }
     else {
         cout << "Invalid choice." << endl;
+        return nullptr;
     }
-
-
 }
 
-void performCrop(Image* inputImage) {
+Image* performCrop(Image* inputImage) {
     int xmin, xmax, ymin, ymax;
 
     cout << "Enter the value for ymin (min: 0): ";
@@ -315,15 +313,14 @@ void performCrop(Image* inputImage) {
 
     if (xmin < 0 || xmax > inputImage->getDimensions().width || ymin < 0 || ymax > inputImage->getDimensions().height || xmin >= xmax || ymin >= ymax) {
         cout << "Invalid crop dimensions." << endl;
-        return;
+        return nullptr;
     }
 
-    Image outputImage = Operation::Crop(*inputImage, ymin, ymax, xmin, xmax);
-    outputImage.display();
-
+    Image* outputImage = new Image(Operation::Crop(*inputImage, ymin, ymax, xmin, xmax));
+    return outputImage;
 }
 
-void performCropVideo(Video* inputVideo) {
+Video* performCropVideo(Video* inputVideo) {
     int xmin, xmax, ymin, ymax;
 
     cout << "Enter the value for ymin (min: 0): ";
@@ -337,65 +334,65 @@ void performCropVideo(Video* inputVideo) {
 
     if (xmin < 0 || xmax > inputVideo->getDimensions().width || ymin < 0 || ymax > inputVideo->getDimensions().height || xmin >= xmax || ymin >= ymax) {
         cout << "Invalid crop dimensions." << endl;
-        return;
+        return nullptr;
     }
 
-    Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::Crop(ymin, ymax, xmin, xmax));
-    outputVideo.display();
+    Video* outputVideo = new Video(OperationVideo::processVideo(*inputVideo, OperationVideo::Crop(ymin, ymax, xmin, xmax)));
+    return outputVideo;
 
 }
 
-void performRotation(Image* inputImage) {
+Image* performRotation(Image* inputImage) {
     double rotationAngle;
     cout << "Enter the rotation angle: ";
     cin >> rotationAngle;
 
-    Image rotatedImage = Operation::Rotation(*inputImage, rotationAngle);
+    Image* rotatedImage = new Image(Operation::Rotation(*inputImage, rotationAngle));
 
-    rotatedImage.display();
+    return rotatedImage;
 }
 
-void performRotationVideo(Video* inputVideo) {
+Video* performRotationVideo(Video* inputVideo) {
     double rotationAngle;
     cout << "Enter the rotation angle: ";
     cin >> rotationAngle;
 
-    Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::Rotation(rotationAngle));
-    outputVideo.display();
+    Video* outputVideo = new Video(OperationVideo::processVideo(*inputVideo, OperationVideo::Rotation(rotationAngle)));
+    return outputVideo;
 }
 
-void performChangeColor(Image* inputImage) {
+Image* performChangeColor(Image* inputImage) {
     int colorVariation;
     cout << "Enter the color variation value (between -180 and 180): ";
     cin >> colorVariation;
 
-    Image changedImage = Operation::ChangeColor(*inputImage, colorVariation);
+    Image* changedImage = new Image(Operation::ChangeColor(*inputImage, colorVariation));
 
-    changedImage.display();
+    return changedImage;
 }
 
 //A tester sur une vidéo colorée!!
-void performChangeColorVideo(Video* inputVideo) {
+Video* performChangeColorVideo(Video* inputVideo) {
     int colorVariation;
     cout << "Enter the color variation value (between -180 and 180): ";
     cin >> colorVariation;
 
-    Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::ChangeColor(colorVariation));
-    outputVideo.display();
+    Video* outputVideo = new Video(OperationVideo::processVideo(*inputVideo, OperationVideo::ChangeColor(colorVariation)));
+    return outputVideo;
 }
 
-void performConvertToGray(Image* inputImage) {
-    Image grayImage = Operation::ConvertToGray(*inputImage);
-    grayImage.display();
+Image* performConvertToGray(Image* inputImage) {
+    Image* grayImage = new Image(Operation::ConvertToGray(*inputImage));
+    return grayImage;
 }
 
 //A tester sur une vidéo colorée!!
-void performConvertToGrayVideo(Video* inputVideo) {
-    Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::ConvertToGray());
-    outputVideo.display();
+Video* performConvertToGrayVideo(Video* inputVideo) {
+    Video* outputVideo = new Video(OperationVideo::processVideo(*inputVideo, OperationVideo::ConvertToGray()));
+    return outputVideo;
 }
 
-void performStitching(Image* inputImage) {
+Image* performStitching(Image* inputImage) {
     vector<Mat> inputImages;
 
     Mat firstMat = inputImage->getImage();
@@ -423,14 +420,14 @@ void performStitching(Image* inputImage) {
 
     if (inputImages.size() < 2) {
         cout << "Need at least two images to perform stitching." << endl;
-        return;
+        return nullptr;
     }
 
-    Image stitchedImage = Operation::Stitching(inputImages);
-    stitchedImage.display();
+    Image* stitchedImage = new Image(Operation::Stitching(inputImages));
+    return stitchedImage;
 }
 
-void performAddWatermark(Image* inputImage) {
+Image* performAddWatermark(Image* inputImage) {
     string logoPath;
     cout << "Enter the path to the logo image: ";
     cin >> logoPath;
@@ -440,11 +437,11 @@ void performAddWatermark(Image* inputImage) {
     cout << "Enter the alpha (between 0 and 1): ";
     cin >> alpha;
 
-    Image watermarkImage = Operation::AddWatermark(*inputImage, logo, alpha);
-    watermarkImage.display();
+    Image* watermarkImage = new Image(Operation::AddWatermark(*inputImage, logo, alpha));
+    return watermarkImage;
 }
 
-void performAddWatermarkVideo(Video* inputVideo) {
+Video* performAddWatermarkVideo(Video* inputVideo) {
     string logoPath;
     cout << "Enter the path to the logo image: ";
     cin >> logoPath;
@@ -454,11 +451,11 @@ void performAddWatermarkVideo(Video* inputVideo) {
     cout << "Enter the alpha (between 0 and 1): ";
     cin >> alpha;
 
-    Video outputVideo = OperationVideo::processVideo(*inputVideo, OperationVideo::AddWatermark(logo, alpha));
-    outputVideo.display();
+    Video* outputVideo = new Video(OperationVideo::processVideo(*inputVideo, OperationVideo::AddWatermark(logo, alpha)));
+    return outputVideo;
 }
 
-void performDetection(Image* inputImage) {
+Image* performDetection(Image* inputImage) {
     Mat image = inputImage->getImage();
     vector<FaceRecognizer*> faceRecognizers = getFaceRecognizers();
 
@@ -470,8 +467,8 @@ void performDetection(Image* inputImage) {
         }
     }
 
-    imshow("Detected Objects", image);
-    waitKey(0);
+    Image* outputImage = new Image(image);
+    return outputImage;
 }
 
 vector<FaceRecognizer*> getFaceRecognizers() {
@@ -492,7 +489,6 @@ vector<FaceRecognizer*> getFaceRecognizers() {
     size_t sz = 0;
     if (_dupenv_s(&buf, &sz, "HAAR_PATH") == 0 && buf != nullptr)
     {
-        printf("EnvVarName = %s\n", buf);
         haarPath = buf;
         free(buf);
     }
