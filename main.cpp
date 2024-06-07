@@ -1,110 +1,157 @@
 #include <iostream>
 #include "process.h"
+#include "Operation.h"
 
 #define CVUI_IMPLEMENTATION
 #include "cvui.h"
 
 using namespace std;
 using namespace cv;
+using namespace cvui;
 
 #define WINDOW_NAME	"CVUI"
 
+
 int main() {
-	bool checked = false;
-	bool checked2 = true;
-	int count = 0;
-	double trackbarValue = 0.0;
+    init(WINDOW_NAME);
 
-	// Init cvui and tell it to create a OpenCV window, i.e. cv::namedWindow(WINDOW_NAME).
-	cvui::init(WINDOW_NAME);
+    Mat frame = Mat(800, 1000, CV_8UC3);
 
-	double scaling = 1.0;
-	double currentScaling = -1;
-	cv::Mat frame;
+    bool isImage = true;
+    bool display = false;
+    int choice = -1;
 
-	while (true) {
-		if (scaling != currentScaling) {
-			frame = cv::Mat(std::lround(scaling * 300), std::lround(scaling * 600), CV_8UC3);
-			currentScaling = scaling;
-		}
+    Image* inputImage = nullptr;
+    Image* outputImage = nullptr;
+    Video* inputVideo = nullptr;
+    Video* outputVideo = nullptr;
 
-		// Fill the frame with a nice color
-		frame = cv::Scalar(49, 52, 49);
+    char savePath[100] = "output.jpg"; 
 
-		// Show some pieces of text.
-		cvui::text(frame, std::lround(scaling * 50), std::lround(scaling * 30), "Hey there!", scaling * cvui::DEFAULT_FONT_SCALE);
+    while (true) {
+        frame = Scalar(49, 52, 49);
 
-		// Show everything on the screen
-		cv::imshow(WINDOW_NAME, frame);
+        text(frame, 50, 30, "Select Operation:");
+        if (button(frame, 50, 60, "1. Dilation or Erosion")) {
+            choice = 1;
+        }
+        if (button(frame, 50, 90, "2. Resizing")) {
+            choice = 2;
+        }
+        if (button(frame, 50, 120, "3. Brightness Change")) {
+            choice = 3;
+        }
+        if (button(frame, 50, 150, "4. Stitching")) {
+            choice = 4;
+        }
+        if (button(frame, 50, 180, "5. Edge Detection")) {
+            choice = 5;
+        }
+        if (button(frame, 50, 210, "6. Crop")) {
+            choice = 6;
+        }
+        if (button(frame, 50, 240, "7. Rotation")) {
+            choice = 7;
+        }
+        if (button(frame, 50, 270, "8. Change Color")) {
+            choice = 8;
+        }
+        if (button(frame, 50, 300, "9. Convert to Gray")) {
+            choice = 9;
+        }
+        if (button(frame, 50, 330, "10. Add Watermark")) {
+            choice = 10;
+        }
+        if (button(frame, 50, 360, "11. Image Recognition")) {
+            choice = 11;
+        }
 
-		// Check if ESC key was pressed
-		if (cv::waitKey(20) == 27) {
-			break;
-		}
-	}
+        if (button(frame, 150, 470, "Upload Image")) {
+            String imagePath;
+            //cout << "Path to image" << endl;
+            //cin >> imagePath;
+            //inputImage = new Image(imagePath);
+            inputImage = new Image("C:/Users/lenaf/OneDrive/Pictures/icons/face.jpg");
+        }
 
-    //char typeChoice;
-    //bool isImage;
-    //cout << "Do you want to process an image [i] or a video [v] ?";
-    //cin >> typeChoice;
+        if (button(frame, 300, 470, "Upload Video")) {
+            String imagePath;
+            cout << "Path to video" << endl;
+            cin >> imagePath;
+            inputVideo = new Video(imagePath);
+            isImage = false;
+            text(frame, 150, 500, "Video Uploaded");
+        }
 
-    //Image* inputImage = nullptr;
-    //Video* inputVideo = nullptr;
+        if (inputImage != nullptr && isImage) {
+            Mat imgMat = inputImage->getImage();
+            imgMat.copyTo(frame(Rect(400, 50, imgMat.cols, imgMat.rows)));
+        }
 
-    //if (typeChoice == 'i' || typeChoice == 'I') {
-    //    isImage = true;
-    //}
-    //else if (typeChoice == 'v' || typeChoice == 'V') {
-    //    isImage = false;
-    //}
-    //else {
-    //    cout << "The input is not correct." << endl;
-    //    return 1; // Exit the program if the input is not correct
-    //}
+        if (choice != -1 && (inputImage != nullptr || inputVideo != nullptr)) {
+            if (isImage) {
+                outputImage = processChoice(choice, inputImage);
+            }
+            else {
+                processChoiceVideo(choice, inputVideo);
+            }
+            display = true;
+            choice = -1;
+        }
 
-    //try {
-    //    if (isImage) {
-    //        string imagePath;
-    //        imagePath = "C:/Users/marie/OneDrive - ISEP/Isep/A2/S2/Appli multimedia/TP/TP2/TP2/img/HappyFish.jpg";
-    //        //imagePath = "C:/Users/marie/Pictures/image_c1.jpg";
-    //        //cout << "Enter the path to the input image: ";
-    //        //cin >> imagePath;
-    //        inputImage = new Image(imagePath);
-    //        inputImage->display();
-    //    }
-    //    else {
-    //        string videoPath;
-    //        videoPath = "C:/Users/marie/OneDrive - ISEP/Isep/A2/S2/Appli multimedia/TP/TP2/TP2/img/chaplin.mp4";
+        if (outputImage != nullptr) {
+            Mat imgMat = outputImage->getImage();
+            if (imgMat.cols <= frame.cols - 400 && imgMat.rows <= frame.rows - 50) {
+                if (imgMat.channels() == 1) {
+                    cv::cvtColor(imgMat, imgMat, cv::COLOR_GRAY2BGR);
+                }
+                imgMat.copyTo(frame(Rect(400, 50, imgMat.cols, imgMat.rows)));
+            }
+            else if (display == true) {
+                outputImage->display();
+                display = false;
+            }
 
-    //        //cout << "Enter the path to the input video: ";
-    //        //cin >> videoPath;
-    //        inputVideo = new Video(videoPath);
-    //        inputVideo->display();
-    //    }
+            if (button(frame, 50, 470, "Save image")) {
+                String imagePath;
+                cout << "Path to image" << endl;
+                cin >> imagePath;
 
-    //    int choice;
-    //    cout << "Enter choice of what you want to do:\n"
-    //        << "[1] DilationOrErosion\n"
-    //        << "[2] Resizing\n"
-    //        << "[3] Brightness Change\n"
-    //        << "[4] Stitching (not for videos)\n"
-    //        << "[5] Edge Detection\n"
-    //        << "[6] Crop\n"
-    //        << "[7] Rotation\n"
-    //        << "[8] Change color\n"
-    //        << "[9] Convert to gray\n"
-    //        << "[10] Add a watermark\n"
-    //        << "[11] Image recognition\n";
-    //    cin >> choice;
+                String imageName;
+                cout << "Name of image" << endl;
+                cin >> imageName;
+                outputImage->save(imagePath + '\\' + imageName);
+            }
+        }
 
-    //    processChoice(choice, isImage, inputImage, inputVideo);
+        if (outputVideo != nullptr) {
+            if (display == true) {
+                outputVideo->display();
+                display = false;
+            }
 
-    //    if (inputImage) delete inputImage;
-    //    if (inputVideo) delete inputVideo;
-    //}
-    //catch (const exception& e) {
-    //    cerr << "Error: " << e.what() << endl;
-    //    return 1;
-    //}
+            if (button(frame, 50, 470, "Save video")) {
+                String videoPath;
+                cout << "Path to video" << endl;
+                cin >> videoPath;
+
+                String videoName;
+                cout << "Name of video" << endl;
+                cin >> videoName;
+                outputImage->save(videoPath + '\\' + videoName);
+            }
+        }
+
+        update();
+        cv::imshow(WINDOW_NAME, frame);
+
+        if (waitKey(20) == 27) {
+            break;
+        }
+    }
+
+    delete inputImage;
+    delete inputVideo;
+
     return 0;
 }

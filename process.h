@@ -1,31 +1,32 @@
 #pragma once
 #include <iostream>
-#include "image.h"
+#include "Image.h"
 #include "video.h"
 #include "faceRecognition.h"
 
-void performErosionDilation(Image* inputImage);
-void performErosionDilationVideo(Video* inputVideo);
-void performResizing(Image* inputImage);
-void performResizingVideo(Video* inputVideo);
-void performBrightnessChange(Image* inputImage);
-void performBrightnessChangeVideo(Video* inputVideo);
-void performCannyEdgeDetection(Image* inputImage);
-void performCannyEdgeDetectionVideo(Video* inputVideo);
-void performCrop(Image* inputImage);
-void performCropVideo(Video* inputVideo);
-void performRotation(Image* inputImage);
-void performRotationVideo(Video* inputVideo);
-void performChangeColor(Image* inputImage);
-void performChangeColorVideo(Video* inputVideo);
-void performConvertToGray(Image* inputImage);
-void performConvertToGrayVideo(Video* inputVideo);
-void performAddWatermark(Image* inputImage);
-void performAddWatermarkVideo(Video* inputVideo);
-void performDetection(Image* inputImage);
-//void performDetectionVideo(Video* inputVideo);
-void performStitching(Image* inputImage);
+Image* performErosionDilation(Image* inputImage);
+Video* performErosionDilationVideo(Video* inputVideo);
+Image* performResizing(Image* inputImage);
+Video* performResizingVideo(Video* inputVideo);
+Image* performBrightnessChange(Image* inputImage);
+Video* performBrightnessChangeVideo(Video* inputVideo);
+Image* performCannyEdgeDetection(Image* inputImage);
+Video* performCannyEdgeDetectionVideo(Video* inputVideo);
+Image* performCrop(Image* inputImage);
+Video* performCropVideo(Video* inputVideo);
+Image* performRotation(Image* inputImage);
+Video* performRotationVideo(Video* inputVideo);
+Image* performChangeColor(Image* inputImage);
+Video* performChangeColorVideo(Video* inputVideo);
+Image* performConvertToGray(Image* inputImage);
+Video* performConvertToGrayVideo(Video* inputVideo);
+Image* performAddWatermark(Image* inputImage);
+Video* performAddWatermarkVideo(Video* inputVideo);
+Image* performDetection(Image* inputImage);
+//Video* performDetectionVideo(Video* inputVideo);
+Image* performStitching(Image* inputImage);
 
 vector<FaceRecognizer*> getFaceRecognizers();
 
-void processChoice(int choice, bool isImage, Image* inputImage, Video* inputVideo);
+Image* processChoice(int choice, Image* inputImage);
+Video* processChoiceVideo(int choice, Video* inputVideo);
