@@ -31,6 +31,7 @@ int main() {
     while (true) {
         frame = Scalar(49, 52, 49);
 
+        //operations
         text(frame, 50, 30, "Select Operation:");
         if (button(frame, 50, 60, "1. Dilation or Erosion")) {
             choice = 1;
@@ -66,12 +67,12 @@ int main() {
             choice = 11;
         }
 
+
         if (button(frame, 150, 470, "Upload Image")) {
             String imagePath;
-            //cout << "Path to image" << endl;
-            //cin >> imagePath;
-            //inputImage = new Image(imagePath);
-            inputImage = new Image("C:/Users/lenaf/OneDrive/Pictures/icons/face.jpg");
+            cout << "Path to image" << endl;
+            cin >> imagePath;
+            inputImage = new Image(imagePath);
         }
 
         if (button(frame, 300, 470, "Upload Video")) {
@@ -83,11 +84,13 @@ int main() {
             text(frame, 150, 500, "Video Uploaded");
         }
 
+        //display input image
         if (inputImage != nullptr && isImage) {
             Mat imgMat = inputImage->getImage();
             imgMat.copyTo(frame(Rect(400, 50, imgMat.cols, imgMat.rows)));
         }
 
+        //process choice
         if (choice != -1 && (inputImage != nullptr || inputVideo != nullptr)) {
             if (isImage) {
                 outputImage = processChoice(choice, inputImage);
@@ -99,6 +102,7 @@ int main() {
             choice = -1;
         }
 
+        //display ouput image
         if (outputImage != nullptr) {
             Mat imgMat = outputImage->getImage();
             if (imgMat.cols <= frame.cols - 400 && imgMat.rows <= frame.rows - 50) {
@@ -124,6 +128,7 @@ int main() {
             }
         }
 
+        //display output video
         if (outputVideo != nullptr) {
             if (display == true) {
                 outputVideo->display();

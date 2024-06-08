@@ -10,6 +10,7 @@
 using namespace std;
 using namespace cv;
 
+//process choice for image action
 Image* processChoice(int choice, Image* inputImage) {
     Image* outputImage = nullptr;
     switch (choice) {
@@ -64,6 +65,7 @@ Image* processChoice(int choice, Image* inputImage) {
     return outputImage;
 }
 
+//process choice for video action
 Video* processChoiceVideo(int choice, Video* inputVideo) {
     Video* outputVideo = nullptr;
     switch (choice) {
