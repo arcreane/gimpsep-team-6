@@ -32,11 +32,15 @@ void Video::loadFrames() {
 
 
 void Video::save(const string& path) {
-	VideoWriter writer(path, VideoWriter::fourcc('M', 'J', 'P', 'G'), fps, dimensions);
+	if (frames.empty()) {
+		throw runtime_error("No frames to save");
+	}
+
+	VideoWriter writer(path, VideoWriter::fourcc('a', 'v', 'c', '1'), fps, dimensions);
 	if (!writer.isOpened()) {
 		throw runtime_error("Error opening video writer");
 	}
-	for (const auto& frame : frames) {
+	for (const Mat& frame : this->getFrames()) {
 		writer.write(frame);
 	}
 	writer.release();

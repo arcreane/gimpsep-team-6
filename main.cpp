@@ -20,6 +20,7 @@ int main() {
     bool isImage = true;
     bool display = false;
     bool displayInputImage = false;
+    bool displayInputVideo = false;
     bool displayOutputImage = false;
     int choice = -1;
 
@@ -85,6 +86,7 @@ int main() {
             cin >> imagePath;
             inputVideo = new Video(imagePath);
             isImage = false;
+            displayInputVideo = true;
             text(frame, 150, 500, "Video Uploaded");
         }
 
@@ -92,6 +94,13 @@ int main() {
         if (inputImage != nullptr && isImage && displayInputImage) {
             Mat imgMat = inputImage->getImage();
             imgMat.copyTo(frame(Rect(400, 50, imgMat.cols, imgMat.rows)));
+        }
+
+        //display input video
+        if (inputVideo != nullptr && !isImage && displayInputVideo){
+            inputVideo->display();
+            displayInputVideo = false;
+
         }
 
         //process choice
@@ -130,6 +139,7 @@ int main() {
                 String imageName;
                 cout << "Name of image" << endl;
                 cin >> imageName;
+                imageName = imageName + ".jpg";
                 outputImage->save(imagePath + '\\' + imageName);
             }
         }
@@ -149,7 +159,8 @@ int main() {
                 String videoName;
                 cout << "Name of video" << endl;
                 cin >> videoName;
-                outputImage->save(videoPath + '\\' + videoName);
+                videoName = videoName + ".mp4";
+                outputVideo->save(videoPath + '\\' + videoName);
             }
         }
 
