@@ -19,6 +19,8 @@ int main() {
 
     bool isImage = true;
     bool display = false;
+    bool displayInputImage = false;
+    bool displayOutputImage = false;
     int choice = -1;
 
     Image* inputImage = nullptr;
@@ -73,6 +75,8 @@ int main() {
             cout << "Path to image" << endl;
             cin >> imagePath;
             inputImage = new Image(imagePath);
+            displayInputImage = true;
+            displayOutputImage = false;
         }
 
         if (button(frame, 300, 470, "Upload Video")) {
@@ -85,7 +89,7 @@ int main() {
         }
 
         //display input image
-        if (inputImage != nullptr && isImage) {
+        if (inputImage != nullptr && isImage && displayInputImage) {
             Mat imgMat = inputImage->getImage();
             imgMat.copyTo(frame(Rect(400, 50, imgMat.cols, imgMat.rows)));
         }
@@ -94,6 +98,7 @@ int main() {
         if (choice != -1 && (inputImage != nullptr || inputVideo != nullptr)) {
             if (isImage) {
                 outputImage = processChoice(choice, inputImage);
+                displayOutputImage = true;
             }
             else {
                 outputVideo = processChoiceVideo(choice, inputVideo);
@@ -103,7 +108,8 @@ int main() {
         }
 
         //display ouput image
-        if (outputImage != nullptr) {
+        if (outputImage != nullptr && displayOutputImage) {
+            displayInputImage = false;
             Mat imgMat = outputImage->getImage();
             if (imgMat.cols <= frame.cols - 400 && imgMat.rows <= frame.rows - 50) {
                 if (imgMat.channels() == 1) {
