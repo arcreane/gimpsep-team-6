@@ -93,7 +93,7 @@ int main() {
                 outputImage = processChoice(choice, inputImage);
             }
             else {
-                processChoiceVideo(choice, inputVideo);
+                outputVideo = processChoiceVideo(choice, inputVideo);
             }
             display = true;
             choice = -1;
