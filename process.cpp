@@ -483,15 +483,7 @@ vector<FaceRecognizer*> getFaceRecognizers() {
 
     vector<FaceRecognizer*> faceRecognizers;
 
-    string haarPath;
-
-    char* buf = nullptr;
-    size_t sz = 0;
-    if (_dupenv_s(&buf, &sz, "HAAR_PATH") == 0 && buf != nullptr)
-    {
-        haarPath = buf;
-        free(buf);
-    }
+    string haarPath = "./res/";
 
     switch (choice) {
     case 1:
